@@ -13,7 +13,7 @@ export default function Header() {
   const router = useRouter();
   const { getCartCount, getCartTotal, openCart } = useCart();
 
-  const handleNavClick = (item) => {
+  const handleNavClick = (item: string) => {
     setActiveItem(item);
 
     // Route dựa trên menu item
