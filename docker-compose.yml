@@ -1,0 +1,45 @@
+services:
+  # --- Dịch vụ 1: Database MongoDB (Container chính) ---
+  mongodb:
+    image: mongo:latest
+    container_name: food_db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: food_delivery
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    networks:
+      - food-network
+
+  # --- Dịch vụ 2: Mongo Express (Giao diện quản lý DB) ---
+  mongo-express:
+    image: mongo-express:latest
+    container_name: food_admin
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMIN_USERNAME: admin
+      ME_CONFIG_MONGODB_ADMIN_PASSWORD: password123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password123@mongodb:27017
+      ME_CONFIG_BASICAUTH: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+      ME_CONFIG_REQUEST_LOG: "true"
+    depends_on:
+      - mongodb
+    networks:
+      - food-network
+
+# Khai báo nơi lưu trữ dữ liệu bền vững
+volumes:
+  mongo-data:
+
+networks:
+  food-network:
+    driver: bridge
