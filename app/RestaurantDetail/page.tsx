@@ -55,11 +55,11 @@ function RestaurantDetail() {
             {/* Product Image */}
             <div className="relative w-full max-w-md overflow-hidden rounded-3xl shadow-lg">
               <Image
-                src="/R.png"
-                alt="Delicious Burger"
+                src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90"
+                alt="Burger Image"
                 width={500}
                 height={400}
-                className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
+                className="w-full h-auto object-contain bg-white transition-transform duration-300 ease-in-out transform hover:scale-105"
               />
             </div>
 

@@ -6,11 +6,22 @@ import { CheckCircle, Home, FileText } from "lucide-react";
 
 export default function OrderSuccessPage() {
   const router = useRouter();
-  const [orderNumber] = useState(
-    () => Math.floor(Math.random() * 900000) + 100000,
-  );
+  const [orderNumber, setOrderNumber] = useState("");
 
   useEffect(() => {
+    // Generate fallback or get from active order
+    let fallback = Math.floor(Math.random() * 900000) + 100000;
+    setOrderNumber(fallback.toString());
+    const saved = localStorage.getItem("orderuk-active-order");
+    if (saved) {
+      try {
+        const orders = JSON.parse(saved);
+        if (orders && orders.length > 0) {
+          setOrderNumber(orders[0].id.replace("#", ""));
+        }
+      } catch (e) {}
+    }
+
     // Auto redirect after 10 seconds
     const timer = setTimeout(() => {
       router.push("/");
@@ -81,7 +92,7 @@ export default function OrderSuccessPage() {
           </button>
 
           <button
-            onClick={() => alert("Order tracking feature coming soon!")}
+            onClick={() => router.push("/track-order")}
             className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
           >
             <FileText className="w-5 h-5" />

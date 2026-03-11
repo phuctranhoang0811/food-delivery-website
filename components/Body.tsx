@@ -2,50 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Sparkles, Smile, Apple, Smartphone, Plus } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
+import { Search, Sparkles, Smile } from "lucide-react";
 import { useState } from "react";
 import Toast from "./Toast";
-import { formatPriceWithSymbol } from "@/lib/formatPrice";
+import FeaturedRestaurants from "./FeaturedRestaurants";
 
 function Body() {
-  const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-
-  // Sample menu items data
-  const menuItems = [
-    {
-      id: "1",
-      name: "Royal Cheese Burger with extra Fries",
-      price: 14.9,
-      image:
-        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop",
-      restaurant: "Burger Palace",
-    },
-    {
-      id: "2",
-      name: "The classics for 3",
-      price: 18.4,
-      image:
-        "https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=300&h=200&fit=crop",
-      restaurant: "McDonald's",
-    },
-    {
-      id: "3",
-      name: "Chicken & Ribs Combo",
-      price: 21.3,
-      image:
-        "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=300&h=200&fit=crop",
-      restaurant: "KFC",
-    },
-  ];
-
-  const handleAddToCart = (item: any) => {
-    addToCart(item);
-    setToastMessage(`${item.name} added to cart!`);
-    setShowToast(true);
-  };
   return (
     <section className="py-6">
       <div className="bg-gradient-to-r from-orange-100 via-orange-200 to-orange-400 rounded-3xl p-6 lg:p-10 overflow-hidden relative shadow-lg">
@@ -202,7 +166,7 @@ function Body() {
             {
               name: "Soups",
               count: "32 Restaurants",
-              img: "https://images.unsplash.com/photo-1547592166-23acbe346499?w=800",
+              img: "/soup-bowl.jpg",
             },
           ].map((cat) => (
             <div
@@ -226,46 +190,8 @@ function Body() {
         </div>
       </div>
 
-      {/* Sample Menu Items Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          Featured Items
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {menuItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
-            >
-              <div className="relative h-48">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-1">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-3">{item.restaurant}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-orange-500">
-                    {formatPriceWithSymbol(item.price)}
-                  </span>
-                  <button
-                    onClick={() => handleAddToCart(item)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Featured Restaurants */}
+      <FeaturedRestaurants />
 
       {/* Popular Restaurants */}
       <div className="mt-12">
@@ -276,57 +202,44 @@ function Body() {
           {[
             {
               name: "McDonald's London",
-              color: "bg-[#BD0018]",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg",
-              isLocal: false,
+              logo: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
+              cover: true,
             },
             {
               name: "Papa Johns",
-              color: "bg-white",
               logo: "/papaJohn.jpg",
-              isLocal: true,
+              cover: true,
             },
             {
               name: "KFC West London",
-              color: "bg-white",
               logo: "/logo-kfc.jpg",
-              isLocal: true,
+              cover: true,
             },
             {
               name: "Texas Chicken",
-              color: "bg-white",
-              logo: "/texaschiken.jpg",
-              isLocal: true,
+              logo: "/texas-chicken-logo-png_seeklogo-254144.png",
+              cover: false,
             },
             {
               name: "Burger King",
-              color: "bg-[#F58A07]",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/c/cc/Burger_King_2020.svg",
-              isLocal: false,
+              logo: "/burger-king-logo-png_seeklogo-287946.png",
+              cover: false,
             },
             {
               name: "Shaurma 1",
-              color: "bg-[#FFC700]",
-              logo: "https://cdn-icons-png.flaticon.com/512/3214/3214040.png",
-              isLocal: false,
+              logo: "/logoshaurma.png",
+              cover: false,
             },
           ].map((res) => (
             <Link key={res.name} href="/RestaurantDetail">
               <div className="flex flex-col shadow-sm hover:shadow-md transition-shadow cursor-pointer rounded-2xl overflow-hidden">
-                <div
-                  className={`${res.color} h-40 flex items-center justify-center ${res.isLocal ? '' : 'p-4'}`}
-                >
+                <div className="h-40 flex items-center justify-center bg-white">
                   <Image
                     src={res.logo}
                     alt={res.name}
                     width={200}
                     height={200}
-                    className={res.isLocal ? 'w-full h-full object-cover' : 'max-w-full max-h-full object-contain'}
-                    style={{
-                      filter: !res.isLocal && (res.color === "bg-[#BD0018]" || res.color === "bg-[#F58A07]")
-                        ? "brightness(0) invert(1)"
-                        : "none",
-                    }}
+                    className={`w-full h-full ${res.cover ? "object-cover" : "object-contain"}`}
                   />
                 </div>
                 <div className="bg-orange-500 text-white text-center py-3 text-xs font-bold">

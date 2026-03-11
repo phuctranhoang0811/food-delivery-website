@@ -18,21 +18,28 @@ type CartAction =
   | { type: "REMOVE_FROM_CART"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
   | { type: "CLEAR_CART" }
-  | { type: "LOAD_CART"; payload: CartItem[] };
+  | { type: "LOAD_CART"; payload: CartItem[] }
+  | { type: "APPLY_VOUCHER"; payload: { code: string; discountAmount: number } }
+  | { type: "REMOVE_VOUCHER" };
 
 // State của Cart
 interface CartState {
   items: CartItem[];
+  appliedVoucher: { code: string; discountAmount: number } | null;
 }
 
 // Context interface
 interface CartContextType {
   items: CartItem[];
+  appliedVoucher: { code: string; discountAmount: number } | null;
   addToCart: (product: Omit<CartItem, "quantity">) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
+  getFinalTotal: () => number;
+  applyVoucher: (voucher: { code: string; discountAmount: number }) => void;
+  removeVoucher: () => void;
   getCartCount: () => number;
   isOpen: boolean;
   openCart: () => void;
@@ -105,10 +112,16 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
 
     case "CLEAR_CART":
-      return { ...state, items: [] };
+      return { ...state, items: [], appliedVoucher: null };
 
     case "LOAD_CART":
       return { ...state, items: action.payload };
+
+    case "APPLY_VOUCHER":
+      return { ...state, appliedVoucher: action.payload };
+
+    case "REMOVE_VOUCHER":
+      return { ...state, appliedVoucher: null };
 
     default:
       return state;
@@ -120,8 +133,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Provider Component
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [state, dispatch] = useReducer(cartReducer, { items: [], appliedVoucher: null });
+  const [isOpen, ReactSetIsOpen] = React.useState(false);
 
   // Load cart từ localStorage khi component mount
   useEffect(() => {
@@ -134,12 +147,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         console.error("Error loading cart from localStorage:", error);
       }
     }
+    const savedVoucher = localStorage.getItem("orderuk-voucher");
+    if (savedVoucher) {
+      try {
+        const voucher = JSON.parse(savedVoucher);
+        dispatch({ type: "APPLY_VOUCHER", payload: voucher });
+      } catch (error) {
+         console.error("Error loading voucher from localStorage:", error);
+      }
+    }
   }, []);
 
   // Lưu cart vào localStorage khi có thay đổi
   useEffect(() => {
     localStorage.setItem("orderuk-cart", JSON.stringify(state.items));
   }, [state.items]);
+
+  useEffect(() => {
+    if (state.appliedVoucher) {
+      localStorage.setItem("orderuk-voucher", JSON.stringify(state.appliedVoucher));
+    } else {
+      localStorage.removeItem("orderuk-voucher");
+    }
+  }, [state.appliedVoucher]);
 
   const addToCart = (product: Omit<CartItem, "quantity">) => {
     dispatch({ type: "ADD_TO_CART", payload: product });
@@ -157,6 +187,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: "CLEAR_CART" });
   };
 
+  const applyVoucher = (voucher: { code: string; discountAmount: number }) => {
+    dispatch({ type: "APPLY_VOUCHER", payload: voucher });
+  };
+
+  const removeVoucher = () => {
+    dispatch({ type: "REMOVE_VOUCHER" });
+  };
+
   const getCartTotal = () => {
     return state.items.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -164,20 +202,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const getFinalTotal = () => {
+    const subtotal = getCartTotal();
+    const discount = state.appliedVoucher ? state.appliedVoucher.discountAmount : 0;
+    return Math.max(0, subtotal - discount);
+  };
+
   const getCartCount = () => {
     return state.items.reduce((count, item) => count + item.quantity, 0);
   };
 
-  const openCart = () => setIsOpen(true);
-  const closeCart = () => setIsOpen(false);
+  const openCart = () => ReactSetIsOpen(true);
+  const closeCart = () => ReactSetIsOpen(false);
 
   const value = {
     items: state.items,
+    appliedVoucher: state.appliedVoucher,
     addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
     getCartTotal,
+    getFinalTotal,
+    applyVoucher,
+    removeVoucher,
     getCartCount,
     isOpen,
     openCart,

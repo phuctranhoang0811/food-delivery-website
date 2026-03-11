@@ -27,20 +27,20 @@ export default function RestaurantMenu() {
     .filter((item) => item.category === "Cold drinks")
     .slice(0, 3);
 
-  const handleAddToCart = (item: any) => {
-    // Parse price correctly for VND format (₫50,000)
+  const handleAddToCart = (e: React.MouseEvent, item: any) => {
+    e.stopPropagation(); // prevent card click from navigating to product detail
     const priceStr = (item.price || "0").toString();
     const numericPrice = parseInt(priceStr.replace(/[^0-9]/g, ""), 10) || 0;
 
     const cartItem = {
       id: item.id || Math.random().toString(),
       name: item.name || item.title,
-      price: numericPrice, // Store as raw number (50000, not 50.000)
+      price: numericPrice,
       image: item.image,
       restaurant: "McDonald's East London",
     };
     addToCart(cartItem);
-    setToastMessage(`${cartItem.name} added to cart!`);
+    setToastMessage(`"${cartItem.name}" added to cart!`);
     setShowToast(true);
   };
 
@@ -92,7 +92,7 @@ export default function RestaurantMenu() {
                       {offer.title}
                     </h3>
                     <button
-                      onClick={() => handleAddToCart(offer)}
+                      onClick={(e) => handleAddToCart(e, offer)}
                       className="bg-[#FC8A06] text-white rounded-full p-3 hover:bg-orange-600 transition-all shadow-md hover:shadow-lg transform hover:scale-110"
                     >
                       <Plus className="w-5 h-5" />
@@ -140,7 +140,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />
@@ -158,7 +158,7 @@ export default function RestaurantMenu() {
                     "Fresh lettuce, tomato, melting cheese on toasted bun with special sauce",
                   price: "₫65,000",
                   image:
-                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
                 },
                 {
                   id: "burger-extra-2",
@@ -167,7 +167,7 @@ export default function RestaurantMenu() {
                     "Two beef patties, cheese, pickles, onions with signature sauce",
                   price: "₫82,000",
                   image:
-                    "https://images.unsplash.com/photo-1550547660-d9450f859349?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=90",
                 },
                 {
                   id: "burger-extra-3",
@@ -176,7 +176,7 @@ export default function RestaurantMenu() {
                     "Crispy bacon, BBQ sauce, cheddar cheese, onion rings on sesame bun",
                   price: "₫78,000",
                   image:
-                    "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=800&q=90",
                 },
               ].map((item, index) => (
                 <div
@@ -209,7 +209,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />
@@ -258,7 +258,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />
@@ -276,7 +276,7 @@ export default function RestaurantMenu() {
                     "Classic salted fries, perfectly golden and crispy texture",
                   price: "₫38,000",
                   image:
-                    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
                 },
                 {
                   id: "fries-extra-2",
@@ -285,7 +285,7 @@ export default function RestaurantMenu() {
                     "Crispy fries topped with melted cheddar cheese sauce",
                   price: "₫48,000",
                   image:
-                    "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=800&q=90",
                 },
                 {
                   id: "fries-extra-3",
@@ -294,7 +294,7 @@ export default function RestaurantMenu() {
                     "Seasoned curly fries with special spicy coating",
                   price: "₫42,000",
                   image:
-                    "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=800&q=90",
                 },
               ].map((item, index) => (
                 <div
@@ -327,7 +327,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />
@@ -376,7 +376,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />
@@ -394,7 +394,7 @@ export default function RestaurantMenu() {
                     "Refreshing cola with ice cubes and lemon slice, perfect for summer",
                   price: "₫32,000",
                   image:
-                    "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&q=90",
                 },
                 {
                   id: "drinks-extra-2",
@@ -403,7 +403,7 @@ export default function RestaurantMenu() {
                     "Homemade lemonade with fresh lemon, mint leaves and sparkling water",
                   price: "₫45,000",
                   image:
-                    "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=800&q=90",
                 },
                 {
                   id: "drinks-extra-3",
@@ -412,7 +412,7 @@ export default function RestaurantMenu() {
                     "Mixed berries smoothie with yogurt, fresh and healthy choice",
                   price: "₫58,000",
                   image:
-                    "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800&q=90",
                 },
               ].map((item, index) => (
                 <div
@@ -445,7 +445,7 @@ export default function RestaurantMenu() {
                       />
                       {/* Add Button */}
                       <button
-                        onClick={() => handleAddToCart(item)}
+                        onClick={(e) => handleAddToCart(e, item)}
                         className="absolute -bottom-2 -right-2 bg-[#FC8A06] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg hover:scale-110"
                       >
                         <Plus className="w-5 h-5" />

@@ -41,7 +41,7 @@ export const offers: OfferItem[] = [
     id: "offer-2",
     title: "Vegan Discount",
     discount: "-20%",
-    image: "https://images.unsplash.com/photo-1525059696034-4967a729002a?w=400&h=300&fit=crop",
+    image: "/vegan-bowl.jpg",
   },
   {
     id: "offer-3",
@@ -58,7 +58,7 @@ export const menuItems: MenuItem[] = [
     name: "Royal Cheese Burger with extra Fries",
     description: "1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks",
     price: "₫93,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -66,7 +66,7 @@ export const menuItems: MenuItem[] = [
     name: "Big Mac Deluxe",
     description: "Double beef patty, lettuce, cheese, onions, pickles with signature sauce",
     price: "₫85,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -74,7 +74,7 @@ export const menuItems: MenuItem[] = [
     name: "McChicken Special",
     description: "Crispy chicken breast, fresh lettuce, mayo in sesame seed bun",
     price: "₫75,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -82,7 +82,7 @@ export const menuItems: MenuItem[] = [
     name: "Quarter Pounder",
     description: "Fresh quarter pound beef patty, cheese, onions, pickles, ketchup, mustard",
     price: "₫95,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -90,7 +90,7 @@ export const menuItems: MenuItem[] = [
     name: "Fish Burger",
     description: "Crispy fish fillet, cheese, tartar sauce in toasted bun",
     price: "₫70,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -98,7 +98,7 @@ export const menuItems: MenuItem[] = [
     name: "Double Cheeseburger",
     description: "Two beef patties, double cheese, pickles, onions, ketchup, mustard",
     price: "₫88,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -106,7 +106,7 @@ export const menuItems: MenuItem[] = [
     name: "Gourmet Cheese Burger",
     description: "Fresh lettuce, tomato, melting cheese on toasted bun with special sauce",
     price: "₫65,000",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -114,7 +114,7 @@ export const menuItems: MenuItem[] = [
     name: "Double Beef Burger",
     description: "Two beef patties, cheese, pickles, onions with signature sauce",
     price: "₫82,000",
-    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=90",
     category: "Burgers",
   },
   {
@@ -122,7 +122,7 @@ export const menuItems: MenuItem[] = [
     name: "BBQ Bacon Burger",
     description: "Crispy bacon, BBQ sauce, cheddar cheese, onion rings on sesame bun",
     price: "₫78,000",
-    image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=800&q=90",
     category: "Burgers",
   },
   // Fries
@@ -131,7 +131,7 @@ export const menuItems: MenuItem[] = [
     name: "Large French Fries",
     description: "Golden crispy large fries with sea salt seasoning",
     price: "₫45,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -139,7 +139,7 @@ export const menuItems: MenuItem[] = [
     name: "Medium French Fries",
     description: "Golden crispy medium fries with sea salt seasoning",
     price: "₫35,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -147,7 +147,7 @@ export const menuItems: MenuItem[] = [
     name: "Small French Fries",
     description: "Golden crispy small fries with sea salt seasoning",
     price: "₫25,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -155,7 +155,7 @@ export const menuItems: MenuItem[] = [
     name: "Sweet Potato Fries",
     description: "Crispy sweet potato fries with herbs and spices",
     price: "₫50,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -163,7 +163,7 @@ export const menuItems: MenuItem[] = [
     name: "Loaded Cheese Fries",
     description: "Large fries topped with melted cheese and bacon bits",
     price: "₫65,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -171,7 +171,7 @@ export const menuItems: MenuItem[] = [
     name: "Curly Fries",
     description: "Seasoned curly fries with special spice blend",
     price: "₫40,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -179,7 +179,7 @@ export const menuItems: MenuItem[] = [
     name: "Golden Crispy Fries",
     description: "Classic salted fries, perfectly golden and crispy texture",
     price: "₫38,000",
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=90",
     category: "Fries",
   },
   {
@@ -187,7 +187,7 @@ export const menuItems: MenuItem[] = [
     name: "Cheese Loaded Fries",
     description: "Crispy fries topped with melted cheddar cheese sauce",
     price: "₫48,000",
-    image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=800&q=90",
     category: "Fries",
   },
   {
@@ -195,7 +195,7 @@ export const menuItems: MenuItem[] = [
     name: "Curly Fries Basket",
     description: "Seasoned curly fries with special spicy coating",
     price: "₫42,000",
-    image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=800&q=90",
     category: "Fries",
   },
   // Cold Drinks
@@ -204,7 +204,7 @@ export const menuItems: MenuItem[] = [
     name: "Coca Cola Large",
     description: "Refreshing large Coca Cola with ice",
     price: "₫30,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -212,7 +212,7 @@ export const menuItems: MenuItem[] = [
     name: "Orange Juice",
     description: "Fresh squeezed orange juice, medium size",
     price: "₫35,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -220,7 +220,7 @@ export const menuItems: MenuItem[] = [
     name: "Iced Coffee",
     description: "Cold brew coffee with ice and milk",
     price: "₫40,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -228,7 +228,7 @@ export const menuItems: MenuItem[] = [
     name: "Sprite Medium",
     description: "Refreshing lemon-lime soda with ice",
     price: "₫25,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -236,7 +236,7 @@ export const menuItems: MenuItem[] = [
     name: "Milkshake Vanilla",
     description: "Creamy vanilla milkshake with whipped cream",
     price: "₫55,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -244,7 +244,7 @@ export const menuItems: MenuItem[] = [
     name: "Smoothie Strawberry",
     description: "Fresh strawberry smoothie with yogurt",
     price: "₫50,000",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -252,7 +252,7 @@ export const menuItems: MenuItem[] = [
     name: "Iced Cola Classic",
     description: "Refreshing cola with ice cubes and lemon slice, perfect for summer",
     price: "₫32,000",
-    image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -260,7 +260,7 @@ export const menuItems: MenuItem[] = [
     name: "Fresh Lemonade",
     description: "Homemade lemonade with fresh lemon, mint leaves and sparkling water",
     price: "₫45,000",
-    image: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=800&q=90",
     category: "Cold drinks",
   },
   {
@@ -268,7 +268,7 @@ export const menuItems: MenuItem[] = [
     name: "Berry Smoothie",
     description: "Mixed berries smoothie with yogurt, fresh and healthy choice",
     price: "₫58,000",
-    image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800&q=90",
     category: "Cold drinks",
   },
 ];

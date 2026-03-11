@@ -11,28 +11,30 @@ import {
   Minus,
   Plus,
   Trash2,
-  CreditCard,
-  Wallet,
   DollarSign,
   Clock,
   Truck,
+  Check,
+  X,
 } from "lucide-react";
 import { formatPriceWithSymbol } from "@/lib/formatPrice";
+import VoucherSelector, { type Voucher } from "@/components/VoucherSelector";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, updateQuantity, removeFromCart, getCartTotal, clearCart } =
     useCart();
-  const [selectedPayment, setSelectedPayment] = useState("digital-wallet");
-  const [promoCode, setPromoCode] = useState("");
-  const [isPromoApplied, setIsPromoApplied] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState("cash");
+  const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState({
     label: "Home",
     address: "Regent Street, A4, A4201, London",
     floor: "Floor 2, Apartment 4B",
     note: "Near to Icon Plaza, A4201",
   });
+  const [editForm, setEditForm] = useState({ ...deliveryAddress });
 
   const DELIVERY_FEE = 15000; // 15,000 VND
   const SERVICE_TAX = 10000; // 10,000 VND
@@ -41,7 +43,11 @@ export default function CheckoutPage() {
   const subtotal = getCartTotal();
   const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
   const totalAmount = subtotal + deliveryFee + SERVICE_TAX;
-  const discount = isPromoApplied ? subtotal * 0.1 : 0; // 10% discount
+  const discount = selectedVoucher
+    ? selectedVoucher.type === "percent"
+      ? Math.min(subtotal * (selectedVoucher.discount / 100), 100000)
+      : selectedVoucher.discount
+    : 0;
   const finalAmount = totalAmount - discount;
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
@@ -56,18 +62,23 @@ export default function CheckoutPage() {
     removeFromCart(id);
   };
 
-  const handleApplyPromo = () => {
-    if (promoCode.toUpperCase() === "SAVE10") {
-      setIsPromoApplied(true);
-    }
-  };
-
   const handlePlaceOrder = async () => {
     // Set loading state
     setIsPlacingOrder(true);
 
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Save active order for tracking
+    const newOrder = {
+      id: `#${Math.floor(1000000 + Math.random() * 9000000)}`,
+      step: "Shipping", // Start at shipping/preparing
+      items: items.map(item => ({ name: item.name, qty: item.quantity })),
+      total: formatPriceWithSymbol(finalAmount),
+    };
+
+    // Storing as array so track-order can map it
+    localStorage.setItem("orderuk-active-order", JSON.stringify([newOrder]));
 
     // Clear cart and redirect
     clearCart();
@@ -126,47 +137,102 @@ export default function CheckoutPage() {
                     Delivery Address
                   </h2>
                 </div>
-                <button className="text-orange-500 hover:text-orange-600 font-medium">
-                  <Edit3 className="w-4 h-4 inline mr-1" />
-                  Edit
-                </button>
+                {!isEditingAddress ? (
+                  <button
+                    onClick={() => { setEditForm({ ...deliveryAddress }); setIsEditingAddress(true); }}
+                    className="text-orange-500 hover:text-orange-600 font-medium"
+                  >
+                    <Edit3 className="w-4 h-4 inline mr-1" />
+                    Edit
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setDeliveryAddress({ ...editForm }); setIsEditingAddress(false); }}
+                      className="flex items-center gap-1 text-green-600 hover:text-green-700 font-medium"
+                    >
+                      <Check className="w-4 h-4" /> Save
+                    </button>
+                    <button
+                      onClick={() => setIsEditingAddress(false)}
+                      className="flex items-center gap-1 text-gray-500 hover:text-gray-700 font-medium"
+                    >
+                      <X className="w-4 h-4" /> Cancel
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="flex gap-4">
-                {/* Map placeholder */}
-                <div className="w-24 h-24 bg-green-100 rounded-lg flex-shrink-0 relative overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-green-200 to-green-300"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-orange-500" />
+              {isEditingAddress ? (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Label (e.g. Home, Work)</label>
+                    <input
+                      type="text"
+                      value={editForm.label}
+                      onChange={(e) => setEditForm((p) => ({ ...p, label: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Address</label>
+                    <input
+                      type="text"
+                      value={editForm.address}
+                      onChange={(e) => setEditForm((p) => ({ ...p, address: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Floor / Apartment</label>
+                    <input
+                      type="text"
+                      value={editForm.floor}
+                      onChange={(e) => setEditForm((p) => ({ ...p, floor: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Delivery Note</label>
+                    <input
+                      type="text"
+                      value={editForm.note}
+                      onChange={(e) => setEditForm((p) => ({ ...p, note: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                    />
                   </div>
                 </div>
-
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
-                    {deliveryAddress.label}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    {deliveryAddress.address}
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    {deliveryAddress.floor}
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    {deliveryAddress.note}
-                  </p>
-
-                  <div className="flex items-center gap-4 mt-3 text-sm">
-                    <div className="flex items-center gap-1 text-green-600">
-                      <Clock className="w-4 h-4" />
-                      <span>20-30 min</span>
+              ) : (
+                <div className="flex gap-4">
+                  {/* Map placeholder */}
+                  <div className="w-24 h-24 bg-green-100 rounded-lg flex-shrink-0 relative overflow-hidden">
+                    <div className="w-full h-full bg-gradient-to-br from-green-200 to-green-300"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <MapPin className="w-6 h-6 text-orange-500" />
                     </div>
-                    <div className="flex items-center gap-1 text-blue-600">
-                      <Truck className="w-4 h-4" />
-                      <span>Delivery</span>
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      {deliveryAddress.label}
+                    </h3>
+                    <p className="text-gray-600 text-sm">{deliveryAddress.address}</p>
+                    <p className="text-gray-600 text-sm">{deliveryAddress.floor}</p>
+                    <p className="text-gray-500 text-xs mt-1">{deliveryAddress.note}</p>
+
+                    <div className="flex items-center gap-4 mt-3 text-sm">
+                      <div className="flex items-center gap-1 text-green-600">
+                        <Clock className="w-4 h-4" />
+                        <span>20-30 min</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-blue-600">
+                        <Truck className="w-4 h-4" />
+                        <span>Delivery</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Order Items */}
@@ -253,47 +319,35 @@ export default function CheckoutPage() {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Visa */}
                 <button
-                  onClick={() => setSelectedPayment("credit-card")}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    selectedPayment === "credit-card"
+                  onClick={() => setSelectedPayment("visa")}
+                  className={`p-5 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
+                    selectedPayment === "visa"
                       ? "border-orange-500 bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <CreditCard className="w-8 h-8 mx-auto mb-2 text-gray-600" />
-                  <p className="font-medium">Credit Card</p>
-                </button>
-
-                <button
-                  onClick={() => setSelectedPayment("digital-wallet")}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    selectedPayment === "digital-wallet"
-                      ? "border-orange-500 bg-orange-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="relative">
-                    <Wallet className="w-8 h-8 mx-auto mb-2 text-gray-600" />
-                    {selectedPayment === "digital-wallet" && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full"></div>
-                    )}
+                  <div className="bg-blue-700 text-white font-bold italic text-2xl px-4 py-1 rounded">
+                    VISA
                   </div>
-                  <p className="font-medium">Digital Wallet</p>
-                  <p className="text-xs text-gray-500">Balance: 500k</p>
+                  <p className="font-semibold text-gray-900">Pay by Visa</p>
+                  <p className="text-xs text-gray-500">Credit / Debit card</p>
                 </button>
 
+                {/* Cash */}
                 <button
                   onClick={() => setSelectedPayment("cash")}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-5 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
                     selectedPayment === "cash"
                       ? "border-orange-500 bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <DollarSign className="w-8 h-8 mx-auto mb-2 text-gray-600" />
-                  <p className="font-medium">Cash on Delivery</p>
+                  <DollarSign className="w-10 h-10 text-green-600" />
+                  <p className="font-semibold text-gray-900">Cash on Delivery</p>
+                  <p className="text-xs text-gray-500">Pay when delivered</p>
                 </button>
               </div>
             </div>
@@ -306,31 +360,12 @@ export default function CheckoutPage() {
                 Order Summary
               </h2>
 
-              {/* Promo Code */}
+              {/* Voucher Selector */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  PROMO CODE
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  VOUCHER / KHUYẾN MÃI
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter code"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                  <button
-                    onClick={handleApplyPromo}
-                    className="px-4 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
-                  >
-                    Apply
-                  </button>
-                </div>
-                {isPromoApplied && (
-                  <p className="text-green-600 text-sm mt-1">
-                    ✓ SAVE10 applied - 10% off!
-                  </p>
-                )}
+                <VoucherSelector onApply={(v) => setSelectedVoucher(v)} />
               </div>
 
               {/* Order Breakdown */}
@@ -354,9 +389,9 @@ export default function CheckoutPage() {
                   <span>{formatPriceWithSymbol(SERVICE_TAX)}</span>
                 </div>
 
-                {isPromoApplied && (
+                {selectedVoucher && discount > 0 && (
                   <div className="flex justify-between text-green-600">
-                    <span>Discount (SAVE10)</span>
+                    <span>Giảm giá ({selectedVoucher.code})</span>
                     <span>-{formatPriceWithSymbol(discount)}</span>
                   </div>
                 )}

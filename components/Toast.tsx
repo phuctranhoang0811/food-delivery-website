@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { CheckCircle, X } from "lucide-react";
+import { useEffect } from "react";
+import { ShoppingCart, X } from "lucide-react";
 
 interface ToastProps {
   message: string;
@@ -19,16 +19,18 @@ export default function Toast({ message, isVisible, onClose }: ToastProps) {
 
   return (
     <div
-      className={`fixed top-24 right-4 z-50 transition-all duration-300 ${
-        isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] transition-all duration-300 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
       }`}
     >
-      <div className="bg-green-500 text-white rounded-lg shadow-lg p-4 flex items-center gap-3 min-w-[300px]">
-        <CheckCircle className="w-6 h-6 flex-shrink-0" />
-        <span className="font-medium flex-1">{message}</span>
+      <div className="bg-gray-900 text-white rounded-2xl shadow-2xl px-5 py-3.5 flex items-center gap-3 min-w-[280px] max-w-sm">
+        <div className="w-8 h-8 rounded-full bg-[#FC8A06] flex items-center justify-center shrink-0">
+          <ShoppingCart className="w-4 h-4 text-white" />
+        </div>
+        <span className="font-medium text-sm flex-1 leading-snug">{message}</span>
         <button
           onClick={onClose}
-          className="text-white hover:bg-green-600 rounded-full p-1 transition-colors"
+          className="text-gray-400 hover:text-white transition-colors shrink-0 ml-1"
         >
           <X className="w-4 h-4" />
         </button>

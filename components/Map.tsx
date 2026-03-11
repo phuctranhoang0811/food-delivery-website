@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 
 interface MapProps {
@@ -20,15 +20,20 @@ const Map: React.FC<MapProps> = ({
   phone = "+934443-43",
   website = "http://mcdonalds.uk/",
 }) => {
-  const [map, setMap] = useState<any>(null);
+  const mapRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initialize map only once
-    if (map) return;
+    // Already initialized
+    if (mapRef.current) return;
 
-    // Dynamically import leaflet to avoid window undefined errors
     import("leaflet").then((L) => {
-      // Create custom orange marker icon
+      const container = containerRef.current;
+      if (!container) return;
+
+      // Guard: Leaflet marks initialized containers with _leaflet_id
+      if ((container as any)._leaflet_id) return;
+
       const orangeIcon = L.icon({
         iconUrl:
           "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDMyIDQwIj48cGF0aCBkPSJNMTYgMEM4LjEzNiAwIDIgNy4xNjQgMiAxNmMwIDEwIDExIDI0IDEyIDI0czEyLTE0IDEyLTI0YzAtOC44MzYtNi4xMzYtMTYtMTQtMTZ6IiBmaWxsPSIjZmY4MDAwIi8+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iNiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
@@ -41,8 +46,7 @@ const Map: React.FC<MapProps> = ({
         shadowAnchor: [13, 41],
       });
 
-      // Initialize the map
-      const mapInstance = L.map("map", {
+      const mapInstance = L.map(container, {
         center: [latitude, longitude],
         zoom: 15,
         layers: [
@@ -53,10 +57,7 @@ const Map: React.FC<MapProps> = ({
         ],
       });
 
-      // Add marker with popup
-      const marker = L.marker([latitude, longitude], { icon: orangeIcon }).addTo(
-        mapInstance,
-      );
+      const marker = L.marker([latitude, longitude], { icon: orangeIcon }).addTo(mapInstance);
 
       const popupContent = `
         <div style="font-family: Arial, sans-serif; width: 250px;">
@@ -75,21 +76,24 @@ const Map: React.FC<MapProps> = ({
         </div>
       `;
 
-      marker.bindPopup(popupContent, {
-        maxWidth: 300,
-        minWidth: 250,
-      });
-
-      // Open popup by default
+      marker.bindPopup(popupContent, { maxWidth: 300, minWidth: 250 });
       marker.openPopup();
 
-      setMap(mapInstance);
+      mapRef.current = mapInstance;
     });
-  }, [latitude, longitude, storeName, address, phone, website, map]);
+
+    // Cleanup: destroy map on unmount so the container can be reused
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []); // Run once on mount only
 
   return (
     <div className="w-full h-full bg-gray-100 rounded-lg overflow-hidden shadow-md">
-      <div id="map" className="w-full h-full" style={{ minHeight: "400px" }} />
+      <div ref={containerRef} className="w-full h-full" style={{ minHeight: "400px" }} />
     </div>
   );
 };

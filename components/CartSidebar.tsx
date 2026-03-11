@@ -9,11 +9,14 @@ import { formatPriceWithSymbol } from "@/lib/formatPrice";
 export default function CartSidebar() {
   const {
     items,
+    appliedVoucher,
     isOpen,
     closeCart,
     removeFromCart,
     updateQuantity,
     getCartTotal,
+    getFinalTotal,
+    removeVoucher,
     getCartCount,
   } = useCart();
 
@@ -162,6 +165,19 @@ export default function CartSidebar() {
                 </span>
               </div>
 
+              {/* Discount if present */}
+              {appliedVoucher && (
+                <div className="flex justify-between items-center text-lg text-green-600">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Discount ({appliedVoucher.code}):</span>
+                    <button onClick={removeVoucher} className="text-xs text-red-500 hover:text-red-700 underline">Remove</button>
+                  </div>
+                  <span className="font-bold">
+                    -{formatPriceWithSymbol(appliedVoucher.discountAmount)}
+                  </span>
+                </div>
+              )}
+
               {/* Delivery Info */}
               <div className="text-sm text-gray-600 bg-orange-50 p-3 rounded-lg">
                 <p>🚚 Free delivery on orders over 500,000 VND</p>
@@ -173,7 +189,7 @@ export default function CartSidebar() {
                 onClick={handleCheckout}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-bold text-lg transition-colors shadow-lg"
               >
-                Proceed to Checkout • {formatPriceWithSymbol(getCartTotal())}
+                Proceed to Checkout • {formatPriceWithSymbol(getFinalTotal())}
               </button>
             </div>
           )}
