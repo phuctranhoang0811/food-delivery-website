@@ -27,6 +27,7 @@ export default function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState("cash");
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [cardDetails, setCardDetails] = useState({ number: "", name: "", expiry: "", cvv: "" });
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState({
     label: "Home",
@@ -350,6 +351,102 @@ export default function CheckoutPage() {
                   <p className="text-xs text-gray-500">Pay when delivered</p>
                 </button>
               </div>
+
+              {/* Visa Form Detail */}
+              {selectedPayment === "visa" && (
+                <div className="mt-8 p-6 lg:p-8 border border-gray-200 rounded-2xl bg-gray-50 flex flex-col xl:flex-row gap-8 items-center xl:items-start shadow-inner">
+                  
+                  {/* Form fields */}
+                  <div className="flex-1 space-y-5 w-full order-2 xl:order-1">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Card Number / Số thẻ</label>
+                      <input 
+                        type="text" 
+                        placeholder="XXXX XXXX XXXX XXXX" 
+                        maxLength={19}
+                        onChange={(e) => {
+                          let val = e.target.value.replace(/\D/g, "");
+                          val = val.replace(/(.{4})/g, "$1 ").trim();
+                          e.target.value = val;
+                          setCardDetails(p => ({...p, number: val}));
+                        }}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all font-mono text-gray-800" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Cardholder Name / Tên chủ thẻ</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. NGUYEN VAN A" 
+                        onChange={(e) => setCardDetails(p => ({...p, name: e.target.value.toUpperCase()}))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all uppercase text-gray-800" 
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-5">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Expiry / Ngày hết hạn</label>
+                        <input 
+                          type="text" 
+                          placeholder="MM/YY" 
+                          maxLength={5}
+                          onChange={(e) => {
+                            let val = e.target.value.replace(/\D/g, "");
+                            if (val.length >= 3) {
+                              val = val.slice(0, 2) + "/" + val.slice(2);
+                            }
+                            e.target.value = val;
+                            setCardDetails(p => ({...p, expiry: val}));
+                          }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-center text-gray-800 placeholder-gray-400" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">CVV</label>
+                        <input 
+                          type="password" 
+                          placeholder="***" 
+                          maxLength={4}
+                          onChange={(e) => setCardDetails(p => ({...p, cvv: e.target.value}))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-center tracking-widest text-gray-800 placeholder-gray-400" 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Visual Card Mockup */}
+                  <div className="relative flex-shrink-0 w-80 h-52 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 rounded-2xl p-6 flex flex-col justify-between text-white shadow-2xl overflow-hidden order-1 xl:order-2 ring-1 ring-white/10">
+                    {/* Background glow & decorations */}
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl transform translate-x-12 -translate-y-12 pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl transform -translate-x-12 translate-y-12 pointer-events-none"></div>
+                    
+                    <div className="relative flex justify-between items-start z-10">
+                      {/* Chip mock */}
+                      <div className="w-12 h-9 bg-gradient-to-br from-yellow-200 via-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center overflow-hidden border border-yellow-700/50 shadow-sm relative">
+                        <div className="absolute w-full h-[1px] bg-yellow-800/20 top-1/2 -translate-y-1/2"></div>
+                        <div className="absolute w-full h-[1px] bg-yellow-800/20 top-[30%]"></div>
+                        <div className="absolute w-full h-[1px] bg-yellow-800/20 bottom-[30%]"></div>
+                        <div className="absolute h-full w-[1px] bg-yellow-800/20 left-1/3"></div>
+                        <div className="absolute h-full w-[1px] bg-yellow-800/20 right-1/3"></div>
+                      </div>
+                      {/* Visa text mock */}
+                      <div className="font-extrabold italic text-2xl tracking-widest text-white drop-shadow-md">VISA</div>
+                    </div>
+                    
+                    <div className="relative z-10 mt-4">
+                      {/* Card Number Overlay */}
+                      <div className="font-mono tracking-widest text-xl opacity-90 mb-4 drop-shadow-sm flex gap-2">
+                        {cardDetails.number ? cardDetails.number : "XXXX XXXX XXXX XXXX"}
+                      </div>
+                      <div className="flex justify-between text-[11px] lg:text-xs opacity-70 font-mono tracking-wider font-semibold">
+                        <span className="truncate max-w-[150px] uppercase">
+                          {cardDetails.name || "CARDHOLDER NAME"}
+                        </span>
+                        <span>{cardDetails.expiry || "MM/YY"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -363,7 +460,7 @@ export default function CheckoutPage() {
               {/* Voucher Selector */}
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  VOUCHER / KHUYẾN MÃI
+                  VOUCHERS / PROMOTIONS
                 </label>
                 <VoucherSelector onApply={(v) => setSelectedVoucher(v)} />
               </div>
@@ -391,7 +488,7 @@ export default function CheckoutPage() {
 
                 {selectedVoucher && discount > 0 && (
                   <div className="flex justify-between text-green-600">
-                    <span>Giảm giá ({selectedVoucher.code})</span>
+                    <span>Discount ({selectedVoucher.code})</span>
                     <span>-{formatPriceWithSymbol(discount)}</span>
                   </div>
                 )}

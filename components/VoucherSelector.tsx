@@ -19,8 +19,8 @@ const MOCK_VOUCHERS: Voucher[] = [
   {
     id: "v1",
     code: "SAVE50K",
-    title: "Giảm 50,000đ",
-    condition: "Áp dụng cho đơn hàng từ 200,000đ",
+    title: "Discount 50,000VND",
+    condition: "Valid for orders from 200,000VND",
     expiry: "31/03/2026",
     discount: 50000,
     type: "fixed",
@@ -30,8 +30,8 @@ const MOCK_VOUCHERS: Voucher[] = [
   {
     id: "v2",
     code: "FREESHIP",
-    title: "Miễn phí vận chuyển",
-    condition: "Không giới hạn đơn tối thiểu",
+    title: "Free Shipping",
+    condition: "No minimum order",
     expiry: "15/03/2026",
     discount: 15000,
     type: "fixed",
@@ -41,8 +41,8 @@ const MOCK_VOUCHERS: Voucher[] = [
   {
     id: "v3",
     code: "MEGA20",
-    title: "Giảm 20%",
-    condition: "Tối đa 100,000đ · Đơn từ 300,000đ",
+    title: "Discount 20%",
+    condition: "Max 100,000VND · Orders from 300,000VND",
     expiry: "20/04/2026",
     discount: 20,
     type: "percent",
@@ -52,8 +52,8 @@ const MOCK_VOUCHERS: Voucher[] = [
   {
     id: "v4",
     code: "NEWUSER",
-    title: "Ưu đãi người mới",
-    condition: "Giảm 30,000đ cho đơn hàng đầu tiên",
+    title: "New User Offer",
+    condition: "Discount 30,000VND for first order",
     expiry: "30/03/2026",
     discount: 30000,
     type: "fixed",
@@ -97,7 +97,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
     if (found) {
       applyVoucher(found);
     } else {
-      setErrorMsg("Mã voucher không hợp lệ hoặc đã hết hạn.");
+      setErrorMsg("Invalid or expired voucher code.");
     }
   };
 
@@ -112,7 +112,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
         <div className="flex">
           <input
             type="text"
-            placeholder="Nhập mã voucher..."
+            placeholder="Enter voucher code..."
             value={inputCode}
             onChange={(e) => {
               setInputCode(e.target.value.toUpperCase());
@@ -125,7 +125,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
             onClick={handleApplyCode}
             className="px-5 py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold text-sm rounded-r-xl transition-colors whitespace-nowrap"
           >
-            Áp dụng
+            Apply
           </button>
         </div>
 
@@ -136,7 +136,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
         {selectedVoucher && !errorMsg && (
           <p className="text-green-600 text-xs mt-1.5 pl-1 flex items-center gap-1">
             <Check className="w-3.5 h-3.5" />
-            Đã áp dụng: {selectedVoucher.title}
+            Applied: {selectedVoucher.title}
           </p>
         )}
       </div>
@@ -144,7 +144,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
       {/* ── Voucher list ── */}
       <div>
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
-          Voucher khả dụng
+          Available Vouchers
         </p>
 
         <div className="space-y-3">
@@ -154,11 +154,10 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
               <div
                 key={voucher.id}
                 onClick={() => applyVoucher(voucher)}
-                className={`relative flex rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  isSelected
+                className={`relative flex rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md ${isSelected
                     ? "ring-2 ring-orange-500 shadow-md"
                     : "shadow-sm ring-1 ring-gray-100"
-                }`}
+                  }`}
               >
                 {/* ── Left colored stub ── */}
                 <div
@@ -187,15 +186,20 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
                 {/* ── Right content area ── */}
                 <div className="flex-1 bg-white flex items-center justify-between px-4 py-3 border-l-2 border-dashed border-gray-200">
                   <div className="flex-1 min-w-0 pr-3">
-                    <p className="font-bold text-gray-900 text-sm">
+                    <p className="font-bold text-gray-900 text-sm truncate mb-0.5">
                       {voucher.title}
                     </p>
-                    <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                    <p className="text-xs text-gray-500 line-clamp-1 mb-2">
                       {voucher.condition}
                     </p>
-                    <p className="text-[11px] text-gray-400 mt-1">
-                      HSD: {voucher.expiry}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="px-1.5 py-0.5 bg-gray-100 text-black border border-gray-300 font-mono text-[10px] font-bold rounded whitespace-nowrap tracking-wide shadow-sm">
+                        {voucher.code}
+                      </span>
+                      <span className="text-[11px] text-gray-400">
+                        EXP: {voucher.expiry}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex-shrink-0">
@@ -211,7 +215,7 @@ export default function VoucherSelector({ onApply }: VoucherSelectorProps) {
                           applyVoucher(voucher);
                         }}
                       >
-                        Dùng ngay
+                        Apply
                       </button>
                     )}
                   </div>

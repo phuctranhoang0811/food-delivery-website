@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef } from "react";
 import Link from "next/link";
@@ -25,20 +25,19 @@ export default function ForgotPasswordPage() {
     if (!email.trim()) { setError("Vui long nhap email"); return; }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (data.devOtp) setDevOtp(data.devOtp);
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const users = JSON.parse(localStorage.getItem("mock_users") || "[]");
+      const user = users.find((u: any) => u.email === email);
+      
+      if (user) {
+        const mockOtp = "123456";
+        setDevOtp(mockOtp);
         setStep("otp");
       } else {
-        setError(data.message || "Da xay ra loi");
+        setError("Email khong ton tai tren he thong");
       }
     } catch {
-      setError("Loi ket noi server");
+      setError("Loi he thong");
     } finally {
       setLoading(false);
     }
@@ -69,15 +68,14 @@ export default function ForgotPasswordPage() {
     if (otpValue.length < 6) { setError("Vui long nhap du 6 so"); return; }
     setLoading(true);
     try {
-      const res = await fetch(`/api/auth/reset-password?email=${encodeURIComponent(email)}&otp=${otpValue}`);
-      if (res.ok) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      if (otpValue === devOtp) {
         setStep("password");
       } else {
-        const data = await res.json();
-        setError(data.message || "Ma OTP khong dung");
+        setError("Ma OTP khong dung");
       }
     } catch {
-      setError("Loi ket noi server");
+      setError("Loi he thong");
     } finally {
       setLoading(false);
     }
@@ -90,19 +88,19 @@ export default function ForgotPasswordPage() {
     if (newPassword !== confirmPassword) { setError("Mat khau xac nhan khong khop"); return; }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp: otp.join(""), newPassword }),
-      });
-      const data = await res.json();
-      if (res.ok) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const users = JSON.parse(localStorage.getItem("mock_users") || "[]");
+      const userIndex = users.findIndex((u: any) => u.email === email);
+      
+      if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+        localStorage.setItem("mock_users", JSON.stringify(users));
         setStep("done");
       } else {
-        setError(data.message || "Da xay ra loi");
+        setError("Da xay ra loi khong tim thay nguoi dung");
       }
     } catch {
-      setError("Loi ket noi server");
+      setError("Loi he thong");
     } finally {
       setLoading(false);
     }

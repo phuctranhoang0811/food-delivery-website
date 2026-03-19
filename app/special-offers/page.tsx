@@ -3,7 +3,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import Toast from "@/components/Toast";
 import { formatPriceWithSymbol } from "@/lib/formatPrice";
@@ -14,7 +13,7 @@ const VOUCHERS = [
   { id: 2, code: "SUMMERCOOL", title: "Summer Party", desc: "Enjoy 30,000 VND off for all orders over 100,000 VND", discountAmount: 30000, color: "bg-blue-500" },
   { id: 3, code: "FREESHIP", title: "Free Shipping", desc: "Save 15,000 VND on delivery fee", discountAmount: 15000, color: "bg-green-500" },
   { id: 4, code: "MIDNIGHT", title: "Midnight Cravings", desc: "Save 25,000 VND for orders from 22h - 02h", discountAmount: 25000, color: "bg-purple-500" },
-  { id: 5, code: "VEGANLOVER", title: "Vegan Special", desc: "Save 40,000 VND on all healthy and vegan meals", discountAmount: 40000, color: "bg-teal-500", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80" },
+  { id: 5, code: "VEGANLOVER", title: "Vegan Special", desc: "Save 40,000 VND on all healthy and vegan meals", discountAmount: 40000, color: "bg-teal-500" },
 ];
 
 export default function SpecialOffers() {
@@ -44,16 +43,9 @@ export default function SpecialOffers() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {VOUCHERS.map((voucher) => (
             <div key={voucher.id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100 flex flex-col sm:flex-row">
-              <div className={`relative ${voucher.color} p-6 flex flex-col justify-center items-center text-white sm:w-1/3 min-h-[140px] overflow-hidden`}>
-                {voucher.image && (
-                  <Image src={voucher.image} alt={voucher.title} fill className="object-cover opacity-40 mix-blend-overlay" />
-                )}
-                <div className="relative z-10 flex flex-col items-center">
-                  <Ticket className="w-10 h-10 mb-2 opacity-90 filter drop-shadow-md" />
-                  <span className="font-mono font-bold text-lg tracking-wider border-2 border-white/80 px-3 py-1 border-dashed rounded bg-black/20 backdrop-blur-sm drop-shadow-md">
-                    {voucher.code}
-                  </span>
-                </div>
+              <div className={`${voucher.color} p-6 flex flex-col justify-center items-center text-white sm:w-1/3 min-h-[140px]`}>
+                <Ticket className="w-10 h-10 mb-2 opacity-90" />
+                <span className="font-mono font-bold text-lg tracking-wider border-2 border-white/50 px-3 py-1 border-dashed rounded">{voucher.code}</span>
               </div>
               
               <div className="p-6 flex-1 flex flex-col justify-between">
