@@ -28,19 +28,22 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      
-      const users = JSON.parse(localStorage.getItem("mock_users") || "[]");
-      const user = users.find((u: any) => u.email === email);
-      
-      if (user && user.password === password) {
-        localStorage.setItem("userId", user.id);
-        alert("✅ Đăng nhập thành công!");
-        router.push("/");
-      } else {
-        setError("Email hoặc mật khẩu sai");
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Email hoặc mật khẩu sai");
+        return;
       }
+
+      localStorage.setItem("userId", data.userId);
+      alert("✅ Đăng nhập thành công!");
+      router.push("/");
     } catch (err) {
       setError("❌ Lỗi hệ thống");
       console.error(err);

@@ -44,22 +44,21 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-      const users = JSON.parse(localStorage.getItem("mock_users") || "[]");
-      const existingUser = users.find((u: any) => u.email === email);
-      
-      if (existingUser) {
-        setError("Email này đã được đăng ký.");
-      } else {
-        const newUser = { id: Date.now().toString(), name, email, password };
-        users.push(newUser);
-        localStorage.setItem("mock_users", JSON.stringify(users));
-        
-        setSuccess("✅ Registration successful! Redirecting...");
-        setTimeout(() => router.push("/login"), 2000);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Lỗi đăng ký");
+        return;
       }
+
+      setSuccess("✅ Registration successful! Redirecting...");
+      setTimeout(() => router.push("/login"), 2000);
     } catch (err) {
       setError("❌ Lỗi hệ thống (System Error)");
       console.error(err);
