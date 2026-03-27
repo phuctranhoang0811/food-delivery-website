@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Conversation from "@/lib/models/Conversation";
 import Message from "@/lib/models/Message";
+import User from "@/lib/models/User"; // Import to register schema
+
+export const dynamic = 'force-dynamic';
+
+// Tránh việc Next.js tự động xóa import không sử dụng (Tree-shaking)
+// bằng cách tham chiếu trực tiếp đến nó.
+const _User = User;
 
 export async function POST(req: Request) {
   try {

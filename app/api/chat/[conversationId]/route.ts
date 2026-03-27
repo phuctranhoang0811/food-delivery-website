@@ -3,6 +3,8 @@ import { connectDB } from "@/lib/db";
 import Message from "@/lib/models/Message";
 import Conversation from "@/lib/models/Conversation";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request, { params }: { params: Promise<{ conversationId: string }> }) {
   try {
     await connectDB();

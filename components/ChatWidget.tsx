@@ -5,18 +5,20 @@ import {
   MessageCircle, X, Send, Minus, 
   Smile, ImageIcon, Store, Headset, User
 } from "lucide-react";
+import { io, Socket } from "socket.io-client";
 
 interface Message {
   _id?: string;
   id?: string;
   senderId?: string;
   isAdmin?: boolean;
-  sender?: "admin" | "user"; // Dành cho UI cũ
+  sender?: "admin" | "user"; 
   text: string;
 }
 
-// Generate an anonymous ObjectId if not logged in
 const generateObjectId = () => [...Array(24)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+let socket: Socket;
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,12 +35,21 @@ export default function ChatWidget() {
     "Missing item",
   ];
 
-  // Initialize customer ID and fetch messages
+  // 1. Khởi tạo Socket.IO và đọc ID Khách Hàng
   useEffect(() => {
-    // Prefer actual logged-in user ID
+    // Kết nối Socket
+    socket = io();
+
+    // Lắng nghe tin nhắn mới từ Admin gửi tới qua Socket
+    socket.on("receive_message", (newMsg: Message) => {
+      setMessages((prev) => {
+        // Chống lặp tin nhắn nếu đã thêm ảo trước đó
+        if (prev.find(m => m.id === newMsg.id || m._id === newMsg._id)) return prev;
+        return [...prev, newMsg];
+      });
+    });
+
     let storedId = localStorage.getItem("userId"); 
-    
-    // If not logged in, use guest ID
     if (!storedId) {
       storedId = localStorage.getItem("chat_customer_id");
       if (!storedId) {
@@ -46,31 +57,30 @@ export default function ChatWidget() {
         localStorage.setItem("chat_customer_id", storedId);
       }
     }
-    
     setCustomerId(storedId);
 
-    if (isOpen) {
-      fetchMessages(storedId);
-    }
-  }, [isOpen]);
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
-  // Polling for new messages
+  // 2. Tải lịch sử tin nhắn lần đầu mở & Join Room mạng
   useEffect(() => {
     if (isOpen && customerId) {
       fetchMessages(customerId);
-      const interval = setInterval(() => fetchMessages(customerId), 3000);
-      return () => clearInterval(interval);
+      // Tham gia phòng chat riêng biệt dựa trên ID khách hàng
+      socket.emit("join_conversation", customerId);
     }
   }, [isOpen, customerId]);
 
-  // Scroll to bottom on new message
+  // Cuộn xuống tin nhắn mới nhất
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isOpen]);
 
-  // Fetch chat history
+  // HÀM 1: LẤY LỊCH SỬ TIN NHẮN
   const fetchMessages = async (userId: string) => {
     try {
       const res = await fetch(`/api/chat/user/${userId}`);
@@ -85,20 +95,22 @@ export default function ChatWidget() {
     }
   };
 
-  // Send message
+  // HÀM 2: GỬI TIN NHẮN REAL-TIME
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
-    // 1. Optimistic UI update
+    // 1. Hiển thị ngay lên màn hình (Optimistic UI)
+    const tempId = Date.now().toString();
     const newUserMsg: Message = {
-      id: Date.now().toString(),
+      id: tempId,
       isAdmin: false,
       text: text,
+      senderId: customerId
     };
     setMessages((prev) => [...prev, newUserMsg]);
     setInputText("");
 
-    // 2. Send payload to API
+    // 2. Gửi cục data xuống Database
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -111,7 +123,10 @@ export default function ChatWidget() {
       });
       
       if (response.ok) {
-         fetchMessages(customerId); // Reload immediately
+         const savedMessage = await response.json();
+         // 3. Kích hoạt tính năng Phóng tia chớp (Broadcast) qua Socket.IO tới Admin
+         // Định tuyến bằng customerId thay vì conversationId để dễ quản lý phòng
+         socket.emit("send_message", { ...savedMessage, conversationId: customerId });
       }
     } catch (error) {
       console.error("Network error:", error);

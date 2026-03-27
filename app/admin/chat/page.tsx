@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, Send, User, Search, Store } from "lucide-react";
+import { io, Socket } from "socket.io-client";
 
 interface Conversation {
   _id: string;
@@ -9,7 +10,7 @@ interface Conversation {
     _id: string;
     name?: string;
     email?: string;
-  };
+  } | string;
   lastMessage: string;
   lastMessageAt: string;
   unreadCount: number;
@@ -17,11 +18,15 @@ interface Conversation {
 
 interface Message {
   _id?: string;
+  id?: string;
   text: string;
   isAdmin: boolean;
   senderId: string;
   createdAt: string;
 }
+
+// Global socket instance
+let socket: Socket;
 
 export default function AdminChatDashboard() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -30,7 +35,33 @@ export default function AdminChatDashboard() {
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Fetch list of active conversations
+  // 1. Khởi tạo Socket.IO
+  useEffect(() => {
+    socket = io();
+
+    // Admin tham gia phòng chung để nghe ngóng tin tức
+    socket.emit("join_admin_dashboard");
+
+    // Lắng nghe có ai đó vừa Chat (cập nhật lại danh sách bên trái)
+    socket.on("conversation_updated", (data: any) => {
+      fetchConversations();
+    });
+
+    // Lắng nghe tin nhắn mới vào phòng đang mở
+    socket.on("receive_message", (newMsg: Message) => {
+      setMessages((prev) => {
+        // Chống trùng lặp nếu tự mình gửi đi
+        if (prev.find(m => m.id === newMsg.id || m._id === newMsg._id)) return prev;
+        return [...prev, newMsg];
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  // Fetch list of active conversations (Lần đầu load trang)
   const fetchConversations = async () => {
     try {
       const res = await fetch("/api/chat");
@@ -45,14 +76,14 @@ export default function AdminChatDashboard() {
 
   useEffect(() => {
     fetchConversations();
-    // Poll for new conversations every 5 seconds
-    const interval = setInterval(fetchConversations, 5000);
-    return () => clearInterval(interval);
   }, []);
 
-  // Fetch messages for selected conversation
+  // Khi chọn một đoạn chat -> Fetch lịch sử và tham gia vào Phòng đó
   useEffect(() => {
     if (selectedChat) {
+      const customerIdObj = selectedChat.customerId as any;
+      const targetRoomId = customerIdObj?._id || customerIdObj;
+
       const fetchMessages = async () => {
         try {
           const res = await fetch(`/api/chat/${selectedChat._id}`);
@@ -66,8 +97,9 @@ export default function AdminChatDashboard() {
       };
       
       fetchMessages();
-      const interval = setInterval(fetchMessages, 3000); // Poll messages
-      return () => clearInterval(interval);
+      
+      // Chuyển kênh Socket sang khách hàng này
+      socket.emit("join_conversation", targetRoomId);
     }
   }, [selectedChat]);
 
@@ -80,8 +112,13 @@ export default function AdminChatDashboard() {
   const handleSendMessage = async () => {
     if (!inputText.trim() || !selectedChat) return;
 
+    const customerIdObj = selectedChat.customerId as any;
+    const targetUserId = customerIdObj?._id || customerIdObj;
+
     // Optimistic UI display
+    const tempId = Date.now().toString();
     const tempMsg: Message = {
+      id: tempId,
       text: inputText,
       isAdmin: true,
       senderId: "000000000000000000000000",
@@ -90,20 +127,33 @@ export default function AdminChatDashboard() {
     setMessages((prev) => [...prev, tempMsg]);
     setInputText("");
 
-    // API Call
+    // Lưu vào DB bằng API (Để quản lý giao dịch an toàn)
     try {
-      await fetch("/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           senderId: "000000000000000000000000", 
           conversationId: selectedChat._id, 
-          customerId: selectedChat.customerId?._id || selectedChat.customerId,
+          customerId: targetUserId,
           text: inputText,
           isAdmin: true,   
         }),
       });
-      fetchConversations(); // Update conversation list sidebar
+      
+      if (response.ok) {
+        const savedMessage = await response.json();
+        
+        // Phát tín hiệu Socket.IO để khách nhận ngay lập tức
+        socket.emit("send_message", { 
+          ...savedMessage, 
+          id: tempId, 
+          conversationId: targetUserId 
+        });
+
+        // Tải lại danh sách bên trái
+        fetchConversations();
+      }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -119,12 +169,15 @@ export default function AdminChatDashboard() {
             <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
               <Store className="w-6 h-6 text-[#0084FF]" /> Message Management
             </h1>
+            <p className="text-xs text-green-600 font-medium mt-1">Real-time (Socket.IO)</p>
           </div>
           <div className="overflow-y-auto flex-1 p-3 flex flex-col gap-2">
             {conversations.length === 0 && (
               <p className="text-gray-500 text-center mt-5 text-sm">No conversations yet</p>
             )}
-            {conversations.map((conv) => (
+            {conversations.map((conv) => {
+              const custAny = conv.customerId as any;
+              return (
               <button
                 key={conv._id}
                 onClick={() => setSelectedChat(conv)}
@@ -139,12 +192,12 @@ export default function AdminChatDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 truncate">
-                    {conv.customerId?.name || "Guest"}
+                    {custAny?.name || "Guest"}
                   </h3>
                   <p className="text-sm text-gray-500 truncate">{conv.lastMessage || "Attachment..."}</p>
                 </div>
               </button>
-            ))}
+            )})}
           </div>
         </div>
 
@@ -160,9 +213,9 @@ export default function AdminChatDashboard() {
                   </div>
                   <div>
                     <h2 className="font-bold text-gray-800 text-lg leading-tight">
-                      {selectedChat.customerId?.name || "Guest"}
+                      {(selectedChat.customerId as any)?.name || "Guest"}
                     </h2>
-                    <p className="text-xs text-green-500 font-medium font-sans">Active on website</p>
+                    <p className="text-xs text-green-500 font-medium font-sans">Active on Websocket</p>
                   </div>
                 </div>
               </div>
@@ -172,7 +225,7 @@ export default function AdminChatDashboard() {
                 {messages.map((msg, i) => {
                   const isAdmin = msg.isAdmin === true;
                   return (
-                    <div key={msg._id || i} className={`max-w-[70%] flex flex-col ${isAdmin ? "self-end items-end" : "self-start items-start"}`}>
+                    <div key={msg._id || msg.id || i} className={`max-w-[70%] flex flex-col ${isAdmin ? "self-end items-end" : "self-start items-start"}`}>
                       <div 
                         className={`px-4 py-2.5 rounded-2xl text-[15px] shadow-sm ${
                           isAdmin 
@@ -202,7 +255,7 @@ export default function AdminChatDashboard() {
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder={`Reply to ${selectedChat.customerId?.name || "Guest"}...`}
+                    placeholder={`Reply to ${(selectedChat.customerId as any)?.name || "Guest"}...`}
                     className="flex-1 bg-transparent px-4 py-1 focus:outline-none text-gray-800 placeholder-gray-500 text-[15px]"
                   />
                   <button
