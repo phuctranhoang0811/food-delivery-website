@@ -76,6 +76,9 @@ export default function AdminChatDashboard() {
 
   useEffect(() => {
     fetchConversations();
+    // BẢO HIỂM DỰ PHÒNG: Tự động tải lại danh sách khách hàng mỗi 5 giây
+    const interval = setInterval(fetchConversations, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   // Khi chọn một đoạn chat -> Fetch lịch sử và tham gia vào Phòng đó
@@ -99,7 +102,11 @@ export default function AdminChatDashboard() {
       fetchMessages();
       
       // Chuyển kênh Socket sang khách hàng này
-      socket.emit("join_conversation", targetRoomId);
+      if (socket) socket.emit("join_conversation", targetRoomId);
+
+      // BẢO HIỂM DỰ PHÒNG: Tự động tải lại tin nhắn mỗi 3 giây nếu Socket bị đứt
+      const interval = setInterval(fetchMessages, 3000);
+      return () => clearInterval(interval);
     }
   }, [selectedChat]);
 

@@ -70,7 +70,11 @@ export default function ChatWidget() {
     if (isOpen && customerId) {
       fetchMessages(customerId);
       // Tham gia phòng chat riêng biệt dựa trên ID khách hàng
-      socket.emit("join_conversation", customerId);
+      if (socket) socket.emit("join_conversation", customerId);
+
+      // BẢO HIỂM DỰ PHÒNG: Tự động xin dữ liệu mỗi 3 giây nếu Socket bị đứt
+      const interval = setInterval(() => fetchMessages(customerId), 3000);
+      return () => clearInterval(interval);
     }
   }, [isOpen, customerId]);
 
