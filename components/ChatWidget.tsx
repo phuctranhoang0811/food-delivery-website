@@ -117,6 +117,7 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           senderId: customerId,
+          customerId: customerId, // Thêm dòng này để Backend biết phòng của ai mà tạo mới Conversation
           text: text,
           isAdmin: false
         })
