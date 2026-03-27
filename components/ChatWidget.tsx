@@ -50,9 +50,10 @@ export default function ChatWidget() {
     });
 
     let storedId = localStorage.getItem("userId"); 
-    if (!storedId) {
+    // Fix: Xóa sạch cache lỗi nếu ID bị dính chữ "undefined" hoặc độ dài sai không đúng chuẩn Mongoose (24 hex)
+    if (!storedId || storedId === "undefined" || storedId === "null" || storedId.length !== 24) {
       storedId = localStorage.getItem("chat_customer_id");
-      if (!storedId) {
+      if (!storedId || storedId === "undefined" || storedId === "null" || storedId.length !== 24) {
         storedId = generateObjectId();
         localStorage.setItem("chat_customer_id", storedId);
       }

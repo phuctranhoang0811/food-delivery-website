@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     return NextResponse.json(newMessage, { status: 201 });
   } catch (error: any) {
     console.error("Lỗi gửi tin nhắn:", error);
-    return NextResponse.json({ error: "Lỗi Server" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Lỗi Server", stack: error.stack }, { status: 500 });
   }
 }
 
