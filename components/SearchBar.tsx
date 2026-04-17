@@ -11,7 +11,7 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
-  placeholder = "e.g. EC4R 3TE", 
+  placeholder = "e.g. 123 Main Street", 
   onSearch,
   className = ""
 }) => {
@@ -35,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-6 py-3.5 border-2 border-orange-500 rounded-full outline-none text-gray-800 placeholder-gray-400 focus:ring-4 focus:ring-orange-100 transition-all font-medium"
+          className="w-full px-6 py-3.5 border-2 border-orange-500 rounded-full outline-none bg-white text-black placeholder-gray-500 focus:ring-4 focus:ring-orange-100 transition-all font-medium"
         />
       </div>
       
