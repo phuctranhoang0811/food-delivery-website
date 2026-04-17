@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -11,13 +12,12 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     // Validate
     if (!name.trim()) {
@@ -57,10 +57,10 @@ export default function SignupPage() {
         return;
       }
 
-      setSuccess("✅ Registration successful! Redirecting...");
+      setShowSuccessModal(true);
       setTimeout(() => router.push("/login"), 2000);
     } catch (err) {
-      setError("❌ Lỗi hệ thống (System Error)");
+      setError("Lỗi hệ thống (System Error)");
       console.error(err);
     } finally {
       setLoading(false);
@@ -133,15 +133,9 @@ export default function SignupPage() {
 
           {/* Lỗi */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+              <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Thành công */}
-          {success && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-600 text-sm">{success}</p>
             </div>
           )}
 
@@ -151,7 +145,14 @@ export default function SignupPage() {
             disabled={loading}
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition"
           >
-            {loading ? "⏳ Processing..." : "Sign Up"}
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                Processing...
+              </span>
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 
@@ -166,6 +167,17 @@ export default function SignupPage() {
           </Link>
         </p>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full mx-4 border border-blue-100">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Đăng ký thành công!</h2>
+            <p className="text-gray-600">Đang chuyển hướng đến đăng nhập...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

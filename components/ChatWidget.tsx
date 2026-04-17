@@ -88,7 +88,7 @@ export default function ChatWidget() {
   // HÀM 1: LẤY LỊCH SỬ TIN NHẮN
   const fetchMessages = async (userId: string) => {
     try {
-      const res = await fetch(`/api/chat/user/${userId}`);
+      const res = await fetch(`/api/chat/user/${userId}`, { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {

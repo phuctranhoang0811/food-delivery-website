@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -42,10 +44,12 @@ export default function LoginPage() {
       }
 
       localStorage.setItem("userId", data.userId);
-      alert("✅ Đăng nhập thành công!");
-      router.push("/");
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
     } catch (err) {
-      setError("❌ Lỗi hệ thống");
+      setError("Lỗi hệ thống");
       console.error(err);
     } finally {
       setLoading(false);
@@ -93,7 +97,8 @@ export default function LoginPage() {
 
           {/* Lỗi */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+              <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
@@ -104,7 +109,14 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition"
           >
-            {loading ? "⏳ Processing..." : "Sign In"}
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                Processing...
+              </span>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 
@@ -126,6 +138,17 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full mx-4 border border-green-100">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Đăng nhập thành công!</h2>
+            <p className="text-gray-600">Đang chuyển hướng...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

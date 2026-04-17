@@ -64,7 +64,7 @@ export default function AdminChatDashboard() {
   // Fetch list of active conversations (Lần đầu load trang)
   const fetchConversations = async () => {
     try {
-      const res = await fetch("/api/chat");
+      const res = await fetch("/api/chat", { cache: "no-store" });
       const data = await res.json();
       if (Array.isArray(data)) {
         setConversations(data);
@@ -89,7 +89,7 @@ export default function AdminChatDashboard() {
 
       const fetchMessages = async () => {
         try {
-          const res = await fetch(`/api/chat/${selectedChat._id}`);
+          const res = await fetch(`/api/chat/${selectedChat._id}`, { cache: "no-store" });
           const data = await res.json();
           if (Array.isArray(data)) {
             setMessages(data);
