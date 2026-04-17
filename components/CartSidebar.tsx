@@ -49,7 +49,7 @@ export default function CartSidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed right-0 top-0 h-screen w-full max-w-md bg-white z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 h-screen w-full sm:w-[380px] bg-white z-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } shadow-2xl overflow-y-auto`}
       >
