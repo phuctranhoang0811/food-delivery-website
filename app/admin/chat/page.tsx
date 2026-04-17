@@ -36,22 +36,9 @@ export default function AdminChatDashboard() {
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Authentication check
-  useEffect(() => {
-    const adminId = localStorage.getItem("adminId");
-    if (!adminId) {
-      router.push("/admin/login");
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, [router]);
 
   // 1. Khởi tạo Socket.IO
   useEffect(() => {
-    if (!isAuthenticated) return;
-    
     socket = io();
 
     // Admin tham gia phòng chung để nghe ngóng tin tức
@@ -90,12 +77,11 @@ export default function AdminChatDashboard() {
   };
 
   useEffect(() => {
-    if (!isAuthenticated) return;
     fetchConversations();
     // BẢO HIỂM DỰ PHÒNG: Tự động tải lại danh sách khách hàng mỗi 5 giây
     const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
-  }, [isAuthenticated]);
+  }, []);
 
   // Khi chọn một đoạn chat -> Fetch lịch sử và tham gia vào Phòng đó
   useEffect(() => {
@@ -182,14 +168,13 @@ export default function AdminChatDashboard() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("adminId");
-    router.push("/admin/login");
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch(e) {}
+    router.push("/login");
   };
-
-  if (!isAuthenticated) {
-    return null; // Return empty while redirecting
-  }
 
   return (
     <div className="flex h-screen bg-gray-100 p-4">

@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import Admin from "@/lib/models/Admin";
 import bcrypt from "bcryptjs";
+import { signToken } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -17,10 +18,20 @@ export async function POST(req: Request) {
       if (!isPasswordValid) {
         return NextResponse.json({ message: "Email hoặc mật khẩu sai" }, { status: 401 });
       }
-      return NextResponse.json(
+      
+      const token = await signToken({ userId: user._id.toString(), role: "user" });
+      const res = NextResponse.json(
         { message: "Đăng nhập người dùng thành công!", userId: user._id, role: "user" },
         { status: 200 }
       );
+      res.cookies.set("auth_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24, // 1 day
+      });
+      return res;
     }
 
     // NẾU KHÔNG LÀ USER -> KIỂM TRA LUỒNG ADMIN VÀ KHỞI TẠO NẾU CẦN
@@ -42,10 +53,20 @@ export async function POST(req: Request) {
       if (!isPasswordValid) {
         return NextResponse.json({ message: "Email hoặc mật khẩu sai" }, { status: 401 });
       }
-      return NextResponse.json(
+
+      const token = await signToken({ userId: admin._id.toString(), role: "admin" });
+      const res = NextResponse.json(
         { message: "Đăng nhập Admin thành công!", userId: admin._id, role: "admin" },
         { status: 200 }
       );
+      res.cookies.set("auth_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24, // 1 day
+      });
+      return res;
     }
 
     // NẾU KHÔNG TÌM THẤY Ở ĐÂU QUÉT
