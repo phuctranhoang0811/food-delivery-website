@@ -39,7 +39,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Email hoặc mật khẩu sai");
+        setError(data.message || "Invalid email or password");
         return;
       }
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
         router.push("/");
       }, 1500);
     } catch (err) {
-      setError("Lỗi hệ thống");
+      setError("System Error");
       console.error(err);
     } finally {
       setLoading(false);
@@ -134,7 +134,7 @@ export default function LoginPage() {
         {/* Forgot password */}
         <p className="text-center mt-4">
           <Link href="/forgot-password" className="text-orange-500 text-sm hover:underline font-medium">
-            Quên mật khẩu?
+            Forgot password?
           </Link>
         </p>
       </div>
@@ -144,8 +144,8 @@ export default function LoginPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full mx-4 border border-green-100">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Đăng nhập thành công!</h2>
-            <p className="text-gray-600">Đang chuyển hướng...</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Login successful!</h2>
+            <p className="text-gray-600">Redirecting...</p>
           </div>
         </div>
       )}

@@ -53,14 +53,14 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Lỗi đăng ký");
+        setError(data.message || "Registration Failed");
         return;
       }
 
       setShowSuccessModal(true);
       setTimeout(() => router.push("/login"), 2000);
     } catch (err) {
-      setError("Lỗi hệ thống (System Error)");
+      setError("System Error");
       console.error(err);
     } finally {
       setLoading(false);
@@ -173,8 +173,8 @@ export default function SignupPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full mx-4 border border-blue-100">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Đăng ký thành công!</h2>
-            <p className="text-gray-600">Đang chuyển hướng đến đăng nhập...</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Registration successful!</h2>
+            <p className="text-gray-600">Redirecting to login...</p>
           </div>
         </div>
       )}
