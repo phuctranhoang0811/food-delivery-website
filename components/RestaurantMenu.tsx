@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Plus, Utensils, CupSoda } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { menuItems, offers } from "@/app/RestaurantDetail/data";
 import { useCart } from "@/contexts/CartContext";
@@ -106,7 +106,7 @@ export default function RestaurantMenu() {
           {/* Burgers Section */}
           <div>
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
-              🍔 Popular Burgers
+              <Utensils className="w-6 h-6 text-orange-500" /> Popular Burgers
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {burgersForOffers.map((item) => (
@@ -224,7 +224,7 @@ export default function RestaurantMenu() {
           {/* Fries Section */}
           <div>
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
-              🍟 Crispy Fries
+              <Utensils className="w-6 h-6 text-orange-500" /> Crispy Fries
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {friesForOffers.map((item) => (
@@ -342,7 +342,7 @@ export default function RestaurantMenu() {
           {/* Cold Drinks Section */}
           <div>
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
-              🥤 Refreshing Drinks
+              <CupSoda className="w-6 h-6 text-orange-500" /> Refreshing Drinks
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {drinksForOffers.map((item) => (

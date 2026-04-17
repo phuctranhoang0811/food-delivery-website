@@ -6,7 +6,7 @@ import RestaurantMenu from "@/components/RestaurantMenu";
 import RestaurantInfo from "@/components/RestaurantInfo";
 import RestaurantMapReviews from "@/components/RestaurantMapReviews";
 import Image from "next/image";
-import { Clock, Truck, Star } from "lucide-react";
+import { Clock, Truck, Star, ShoppingBag } from "lucide-react";
 
 function RestaurantDetail() {
   return (
@@ -31,7 +31,7 @@ function RestaurantDetail() {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <div className="flex items-center gap-2 border border-gray-400 rounded-full px-6 py-3">
-                <span className="text-sm">🛍️</span>
+                <ShoppingBag className="w-4 h-4 text-gray-700" />
                 <span className="text-sm font-medium">
                   Minimum Order: 12 GBP
                 </span>

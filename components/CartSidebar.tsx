@@ -2,7 +2,7 @@
 
 import { useCart } from "@/contexts/CartContext";
 import Image from "next/image";
-import { X, Plus, Minus, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, ShoppingBag, Truck, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatPriceWithSymbol } from "@/lib/formatPrice";
 
@@ -179,9 +179,9 @@ export default function CartSidebar() {
               )}
 
               {/* Delivery Info */}
-              <div className="text-sm text-gray-600 bg-orange-50 p-3 rounded-lg">
-                <p>🚚 Free delivery on orders over 500,000 VND</p>
-                <p>📍 Delivery: 20-30 minutes</p>
+              <div className="text-sm text-gray-600 bg-orange-50 p-3 rounded-lg space-y-2">
+                <p className="flex items-center gap-2"><Truck className="w-4 h-4 text-orange-500" /> Free delivery on orders over 500,000 VND</p>
+                <p className="flex items-center gap-2"><MapPin className="w-4 h-4 text-orange-500" /> Delivery: 20-30 minutes</p>
               </div>
 
               {/* Checkout Button */}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, Mail, Lock, ArrowLeft, CheckCircle, AlertCircle, Camera } from "lucide-react";
+import { User, Mail, Lock, ArrowLeft, CheckCircle, AlertCircle, Camera, Package, ShoppingCart } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -233,15 +233,15 @@ export default function ProfilePage() {
         {/* Quick Links */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-100">
           {[
-            { label: "My Orders", sub: "View order history", href: "/order-history", icon: "📦" },
-            { label: "Checkout", sub: "Continue to payment", href: "/checkout", icon: "🛒" },
+            { label: "My Orders", sub: "View order history", href: "/order-history", icon: <Package className="w-6 h-6 text-orange-500" /> },
+            { label: "Checkout", sub: "Continue to payment", href: "/checkout", icon: <ShoppingCart className="w-6 h-6 text-orange-500" /> },
           ].map((link) => (
             <button
               key={link.href}
               onClick={() => router.push(link.href)}
               className="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors text-left"
             >
-              <span className="text-2xl">{link.icon}</span>
+              <span className="flex items-center justify-center w-8">{link.icon}</span>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">{link.label}</p>
                 <p className="text-xs text-gray-500">{link.sub}</p>
