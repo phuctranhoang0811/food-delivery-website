@@ -43,11 +43,19 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem("userId", data.userId);
-      setShowSuccessModal(true);
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
+      if (data.role === "admin") {
+        localStorage.setItem("adminId", data.userId);
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          router.push("/admin/chat");
+        }, 1500);
+      } else {
+        localStorage.setItem("userId", data.userId);
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
+      }
     } catch (err) {
       setError("System Error");
       console.error(err);

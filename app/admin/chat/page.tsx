@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, Send, User, Search, Store } from "lucide-react";
+import { MessageCircle, Send, User, Search, Store, LogOut } from "lucide-react";
 import { io, Socket } from "socket.io-client";
+import { useRouter } from "next/navigation";
 
 interface Conversation {
   _id: string;
@@ -34,9 +35,23 @@ export default function AdminChatDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Authentication check
+  useEffect(() => {
+    const adminId = localStorage.getItem("adminId");
+    if (!adminId) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
 
   // 1. Khởi tạo Socket.IO
   useEffect(() => {
+    if (!isAuthenticated) return;
+    
     socket = io();
 
     // Admin tham gia phòng chung để nghe ngóng tin tức
@@ -75,11 +90,12 @@ export default function AdminChatDashboard() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     fetchConversations();
     // BẢO HIỂM DỰ PHÒNG: Tự động tải lại danh sách khách hàng mỗi 5 giây
     const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]);
 
   // Khi chọn một đoạn chat -> Fetch lịch sử và tham gia vào Phòng đó
   useEffect(() => {
@@ -166,17 +182,35 @@ export default function AdminChatDashboard() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("adminId");
+    router.push("/admin/login");
+  };
+
+  if (!isAuthenticated) {
+    return null; // Return empty while redirecting
+  }
+
   return (
     <div className="flex h-screen bg-gray-100 p-4">
       <div className="flex w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
         
         {/* Sidebar: Chat List */}
         <div className="w-1/3 border-r border-gray-200 flex flex-col bg-gray-50/50">
-          <div className="p-4 border-b border-gray-200 bg-white">
-            <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-              <Store className="w-6 h-6 text-[#0084FF]" /> Message Management
-            </h1>
-            <p className="text-xs text-green-600 font-medium mt-1">Real-time (Socket.IO)</p>
+          <div className="p-4 border-b border-gray-200 bg-white flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <Store className="w-6 h-6 text-[#0084FF]" /> Message Management
+              </h1>
+              <p className="text-xs text-green-600 font-medium mt-1">Real-time (Socket.IO)</p>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 flex items-center"
+              title="Đăng xuất"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
           <div className="overflow-y-auto flex-1 p-3 flex flex-col gap-2">
             {conversations.length === 0 && (
