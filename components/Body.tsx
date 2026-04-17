@@ -6,6 +6,7 @@ import { Search, Sparkles, Smile } from "lucide-react";
 import { useState } from "react";
 import Toast from "./Toast";
 import FeaturedRestaurants from "./FeaturedRestaurants";
+import SearchBar from "./SearchBar";
 
 function Body() {
   const [showToast, setShowToast] = useState(false);
@@ -28,19 +29,14 @@ function Body() {
               </h1>
             </div>
             <p className="text-gray-700 text-sm font-medium">
-              Enter a postcode to see what we deliver
+              Enter an address to see what we deliver
             </p>
-            <div className="flex gap-3 max-w-md">
-              <input
-                type="text"
-                placeholder="e.g. EC4R 3TE"
-                className="flex-1 px-5 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white shadow-sm"
-              />
-              <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg flex items-center gap-2">
-                <Search className="w-5 h-5" />
-                Search
-              </button>
-            </div>
+            <SearchBar 
+              onSearch={(val) => {
+                setToastMessage(`Searching delivery for: ${val}`);
+                setShowToast(true);
+              }}
+            />
           </div>
 
           {/* Right Content - Image */}
