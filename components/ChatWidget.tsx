@@ -20,7 +20,13 @@ const generateObjectId = () => [...Array(24)].map(() => Math.floor(Math.random()
 
 let socket: Socket;
 
+import { usePathname } from "next/navigation";
+
 export default function ChatWidget() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) return null;
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { id: "1", isAdmin: true, text: "Welcome to customer support. How can we help you today?" },
