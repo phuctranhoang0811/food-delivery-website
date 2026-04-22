@@ -65,21 +65,26 @@ export default function Header() {
       <header className="bg-gray-800 text-white w-full">
         {/* Top Bar */}
         <div className="bg-gray-800 text-white">
-          <div className="container mx-auto max-w-[1800px] flex items-center justify-between py-2 px-6 sm:px-8 lg:px-16 xl:px-20">
-            <div className="flex items-center space-x-2">
-              <Star className="text-yellow-400 w-4 h-4 fill-yellow-400" />
-              <span className="text-sm">
+          <div className="container mx-auto max-w-[1800px] flex flex-col lg:flex-row items-center justify-between py-2 px-4 sm:px-8 lg:px-16 xl:px-20 gap-2 lg:gap-0">
+            {/* Promo Info */}
+            <div className="flex items-center space-x-2 text-center">
+              <Star className="text-yellow-400 w-4 h-4 fill-yellow-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">
                 Get 5% Off your first order,{" "}
                 <span className="font-bold text-orange-500">Promo: ORDER5</span>
               </span>
             </div>
-            <div className="flex items-center space-x-3">
-              <MapPin className="text-white w-4 h-4" />
+
+            {/* Address (Hidden on Mobile) */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <MapPin className="text-white w-4 h-4 flex-shrink-0" />
               <span className="text-sm">Regent Street, A4, A4201, London</span>
-              <a href="#" className="text-orange-500 text-sm underline hover:text-orange-400">
+              <a href="#" className="text-orange-500 text-sm underline hover:text-orange-400 whitespace-nowrap">
                 Change Location
               </a>
             </div>
+
+            {/* Cart Button */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={openCart}
