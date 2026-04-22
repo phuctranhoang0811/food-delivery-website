@@ -107,8 +107,8 @@ export default function Header() {
         </div>
 
         {/* Navigation Bar */}
-        <nav className="bg-white text-black shadow-sm">
-          <div className="container mx-auto max-w-[1800px] flex items-center justify-between py-4 px-6 sm:px-8 lg:px-16 xl:px-20">
+        <nav className="bg-white text-black shadow-sm overflow-hidden">
+          <div className="container mx-auto max-w-[1800px] flex flex-col lg:flex-row items-center justify-between py-4 px-4 sm:px-8 lg:px-16 xl:px-20 gap-4 lg:gap-0">
             <div className="flex items-center">
               <Image
                 src="/OrderUk.jpg"
@@ -118,11 +118,11 @@ export default function Header() {
                 className="h-16 w-auto object-contain"
               />
             </div>
-            <ul className="flex space-x-8 text-base">
+            <ul className="flex flex-wrap justify-center gap-3 sm:space-x-8 text-sm sm:text-base">
               {["Home", "Restaurants", "Special Offers", "Track Order"].map((item) => (
                 <li key={item}>
                   <button
-                    className={`px-6 py-2 rounded-full transition-colors ${
+                    className={`px-4 sm:px-6 py-2 rounded-full transition-colors ${
                       activeItem === item
                         ? "bg-orange-500 text-white font-semibold"
                         : "hover:text-orange-500 text-gray-700"

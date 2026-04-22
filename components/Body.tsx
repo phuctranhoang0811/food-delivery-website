@@ -54,25 +54,25 @@ function Body() {
 
       {/* Exclusive Deals Section */}
       <div className="mt-12">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-gray-900">Up to -40%</h2>
-            <Sparkles className="w-6 h-6 text-orange-500 fill-orange-500" />
-            <h2 className="text-2xl font-bold text-gray-900">
+        <div className="flex flex-col lg:flex-row items-center justify-between mb-6 gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-center text-xl sm:text-2xl">
+            <h2 className="font-bold text-gray-900">Up to -40%</h2>
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 fill-orange-500" />
+            <h2 className="font-bold text-gray-900">
               Order.uk exclusive deals
             </h2>
           </div>
-          <div className="flex gap-2">
-            <button className="px-6 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-100">
+          <div className="flex flex-wrap justify-center gap-2">
+            <button className="px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100">
               Vegan
             </button>
-            <button className="px-6 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-100">
+            <button className="px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100">
               Sushi
             </button>
-            <button className="px-6 py-2 rounded-full border-2 border-orange-500 text-orange-500 text-sm font-medium hover:bg-orange-50">
+            <button className="px-4 sm:px-6 py-2 rounded-full border-2 border-orange-500 text-orange-500 text-xs sm:text-sm font-medium hover:bg-orange-50">
               Pizza & Fast food
             </button>
-            <button className="px-6 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-100">
+            <button className="px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100">
               others
             </button>
           </div>
