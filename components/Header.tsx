@@ -65,7 +65,7 @@ export default function Header() {
       <header className="bg-gray-800 text-white w-full">
         {/* Top Bar */}
         <div className="bg-gray-800 text-white">
-          <div className="container mx-auto max-w-[1800px] flex flex-col lg:flex-row items-center justify-between py-2 px-4 sm:px-8 lg:px-16 xl:px-20 gap-2 lg:gap-0">
+          <div className="container mx-auto max-w-[1800px] flex flex-col md:flex-row items-center md:justify-between py-2 px-4 sm:px-8 lg:px-16 xl:px-20 gap-3 md:gap-0">
             {/* Promo Info */}
             <div className="flex items-center space-x-2 text-center">
               <Star className="text-yellow-400 w-4 h-4 fill-yellow-400 flex-shrink-0" />
@@ -75,11 +75,11 @@ export default function Header() {
               </span>
             </div>
 
-            {/* Address (Hidden on Mobile) */}
-            <div className="hidden lg:flex items-center space-x-3">
+            {/* Address */}
+            <div className="flex items-center space-x-2 text-center">
               <MapPin className="text-white w-4 h-4 flex-shrink-0" />
-              <span className="text-sm">Regent Street, A4, A4201, London</span>
-              <a href="#" className="text-orange-500 text-sm underline hover:text-orange-400 whitespace-nowrap">
+              <span className="text-xs sm:text-sm truncate max-w-[150px] sm:max-w-none">Regent Street, A4, A4201, London</span>
+              <a href="#" className="text-orange-500 text-xs sm:text-sm underline hover:text-orange-400 whitespace-nowrap">
                 Change Location
               </a>
             </div>

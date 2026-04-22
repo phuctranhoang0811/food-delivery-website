@@ -27,7 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <form 
       onSubmit={handleSubmit} 
-      className={`flex flex-col sm:flex-row items-center gap-3 w-full max-w-lg ${className}`}
+      className={`flex flex-row items-center gap-2 sm:gap-3 w-full max-w-lg ${className}`}
     >
       <div className="relative w-full flex-grow">
         <input
@@ -35,17 +35,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-6 py-3.5 border-2 border-orange-500 rounded-full outline-none bg-white text-black placeholder-gray-500 focus:ring-4 focus:ring-orange-100 transition-all font-medium"
+          className="w-full px-4 sm:px-6 py-3.5 border-2 border-orange-500 rounded-full outline-none bg-white text-black placeholder-gray-500 focus:ring-4 focus:ring-orange-100 transition-all font-medium text-sm sm:text-base"
         />
       </div>
       
       <button
         type="submit"
         disabled={!inputValue.trim()}
-        className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 active:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed transition-colors text-white px-8 py-3.5 rounded-full flex items-center justify-center gap-2 font-bold focus:outline-none focus:ring-4 focus:ring-orange-200 flex-shrink-0"
+        className="flex-shrink-0 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed transition-colors text-white px-4 sm:px-8 py-3.5 rounded-full flex items-center justify-center gap-2 font-bold focus:outline-none focus:ring-4 focus:ring-orange-200"
       >
         <Search className="w-5 h-5 flex-shrink-0" strokeWidth={2.5} />
-        <span>Search</span>
+        <span className="hidden sm:inline">Search</span>
       </button>
     </form>
   );

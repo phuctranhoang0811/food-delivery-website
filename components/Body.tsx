@@ -14,17 +14,17 @@ function Body() {
   return (
     <section className="py-6">
       <div className="bg-gradient-to-r from-orange-100 via-orange-200 to-orange-400 rounded-3xl p-6 lg:p-10 overflow-hidden relative shadow-lg">
-        <div className="grid lg:grid-cols-2 gap-6 items-center">
+        <div className="flex flex-col md:flex-row gap-6 items-center">
           {/* Left Content */}
-          <div className="space-y-6">
+          <div className="space-y-6 w-full md:w-1/2">
             <p className="text-gray-700 text-sm font-medium">
               Order Restaurant food, takeaway and groceries.
             </p>
             <div className="space-y-1">
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-2xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Feast Your Senses,
               </h1>
-              <h1 className="text-4xl lg:text-5xl font-bold text-orange-500 leading-tight">
+              <h1 className="text-2xl md:text-5xl font-bold text-orange-500 leading-tight">
                 Fast and Fresh
               </h1>
             </div>
@@ -40,7 +40,7 @@ function Body() {
           </div>
 
           {/* Right Content - Image */}
-          <div className="relative">
+          <div className="relative w-full md:w-1/2">
             <Image
               src="/body.jpg"
               alt="Food delivery illustration"
