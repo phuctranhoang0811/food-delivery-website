@@ -62,9 +62,37 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-gray-800 text-white w-full">
-        {/* Top Bar */}
-        <div className="bg-gray-800 text-white">
+      <header className="w-full">
+        {/* --- MOBILE HEADER (App-like) --- */}
+        <div className="md:hidden bg-[#f8f9fa] text-black px-4 pt-6 pb-2">
+          <div className="flex items-center justify-between">
+            {/* Location */}
+            <div className="flex items-center space-x-3">
+              <div className="bg-orange-100 p-2 rounded-full flex-shrink-0">
+                <MapPin className="text-orange-500 w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500 font-medium leading-none mb-1">Delivering to</span>
+                <div className="flex items-center font-bold text-gray-900 text-sm leading-none">
+                  Regent Street, London <ChevronDown className="w-4 h-4 ml-1" />
+                </div>
+              </div>
+            </div>
+            {/* User Avatar */}
+            {userId ? (
+              <div className="bg-orange-50 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => router.push("/profile")}>
+                <User className="text-gray-800 w-5 h-5" />
+              </div>
+            ) : (
+              <div className="bg-orange-50 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer" onClick={() => router.push("/login")}>
+                <User className="text-gray-800 w-5 h-5" />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* --- DESKTOP Header (Top Bar) --- */}
+        <div className="hidden md:block bg-gray-800 text-white">
           <div className="container mx-auto max-w-[1800px] flex flex-col md:flex-row items-center md:justify-between py-2 px-4 sm:px-8 lg:px-16 xl:px-20 gap-3 md:gap-0">
             {/* Promo Info */}
             <div className="flex items-center space-x-2 text-center">
@@ -106,8 +134,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Navigation Bar */}
-        <nav className="bg-white text-black shadow-sm overflow-hidden">
+        {/* Navigation Bar (Desktop Only) */}
+        <nav className="hidden md:block bg-white text-black shadow-sm overflow-hidden">
           <div className="container mx-auto max-w-[1800px] flex flex-col lg:flex-row items-center justify-between py-4 px-4 sm:px-8 lg:px-16 xl:px-20 gap-4 lg:gap-0">
             <div className="flex items-center">
               <Image

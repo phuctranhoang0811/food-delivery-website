@@ -12,8 +12,108 @@ function Body() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   return (
-    <section className="py-6">
-      <div className="bg-gradient-to-r from-orange-100 via-orange-200 to-orange-400 rounded-3xl p-6 lg:p-10 overflow-hidden relative shadow-lg">
+    <section className="py-6 md:py-8">
+      {/* === MOBILE APP LAYOUT === */}
+      <div className="md:hidden space-y-6 pb-12">
+        {/* Logo */}
+        <div className="flex justify-center -mt-4 mb-2">
+          <Image
+            src="/OrderUk.jpg"
+            alt="Order UK Logo"
+            width={160}
+            height={50}
+            className="h-9 w-auto object-contain"
+          />
+        </div>
+
+        {/* Search Bar */}
+        <div className="px-4">
+          <div className="flex items-center bg-[#f4f5f7] rounded-full px-4 py-3.5 border border-transparent focus-within:border-orange-500 transition-colors">
+            <Search className="w-5 h-5 text-gray-500 flex-shrink-0" />
+            <input 
+              type="text"
+              placeholder="What are you craving?"
+              className="bg-transparent border-none outline-none w-full text-black placeholder-gray-500 font-medium ml-3 text-sm focus:ring-0"
+              onChange={(e) => { /* Placeholder for native layout */ }}
+            />
+            <div className="bg-white p-1.5 rounded-full shadow-sm flex-shrink-0 ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-700">
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="pl-4">
+          <div className="flex space-x-3 overflow-x-auto hide-scrollbar pb-2 pr-4">
+            {["All", "Burgers", "Sushi", "Pizza", "Healthy"].map((cat, i) => (
+              <button 
+                key={cat}
+                className={`flex-shrink-0 px-6 py-2 rounded-full text-[13px] font-medium border transition-colors ${
+                  i === 0 
+                    ? 'bg-[#2a303c] text-white border-[#2a303c]' 
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Featured Near You */}
+        <div className="px-4">
+          <h2 className="text-[19px] font-bold text-gray-900 mb-4 tracking-tight">Featured Near You</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Big Card */}
+            <div className="col-span-2 relative h-56 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+              <Image src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=800" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Chef Burgers London" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              <div className="absolute top-3 left-3 bg-white pl-1.5 pr-2 py-1 rounded-full flex items-center shadow-sm">
+                <Star className="w-3.5 h-3.5 text-orange-500 fill-orange-500 mr-1" />
+                <span className="text-xs font-bold text-gray-900 leading-none mt-0.5">4.9</span>
+              </div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="text-lg font-bold leading-tight">Smash & Grab Burgers</h3>
+                <p className="text-xs text-gray-200 mt-1">$0 Delivery fee • 15–25 min</p>
+              </div>
+            </div>
+
+            {/* Small Card 1 */}
+            <div className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+              <Image src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Grand Ai Cafe" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+              <div className="absolute bottom-3 left-3 text-white pr-2">
+                <h3 className="text-sm font-bold leading-tight line-clamp-1">Oshi Sushi Bar</h3>
+                <p className="text-xs text-gray-200 mt-1">30–40 min</p>
+              </div>
+            </div>
+
+            {/* Small Card 2 */}
+            <div className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+              <Image src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Luigi's Oven" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+              <div className="absolute bottom-3 left-3 text-white pr-2">
+                <h3 className="text-sm font-bold leading-tight line-clamp-1">Luigi's Oven</h3>
+                <p className="text-xs text-gray-200 mt-1">20–30 min</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* === DESKTOP LAYOUT === */}
+      <div className="hidden md:block">
+        <div className="bg-gradient-to-r from-orange-100 via-orange-200 to-orange-400 rounded-3xl p-6 lg:p-10 overflow-hidden relative shadow-lg">
         <div className="flex flex-col md:flex-row gap-6 items-center">
           {/* Left Content */}
           <div className="space-y-6 w-full md:w-1/2">
@@ -338,6 +438,7 @@ function Body() {
           </div>
         </div>
       </div>
+      </div> {/* <-- Closing hidden md:block */}
 
       {/* Toast Notification */}
       <Toast
