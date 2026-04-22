@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Sparkles, Smile } from "lucide-react";
+import { Search, Sparkles, Smile, Star } from "lucide-react";
 import { useState } from "react";
 import Toast from "./Toast";
 import FeaturedRestaurants from "./FeaturedRestaurants";
