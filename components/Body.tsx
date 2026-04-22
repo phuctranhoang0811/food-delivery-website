@@ -75,7 +75,7 @@ function Body() {
           <h2 className="text-[19px] font-bold text-gray-900 mb-4 tracking-tight">Featured Near You</h2>
           <div className="grid grid-cols-2 gap-3">
             {/* Big Card */}
-            <div className="col-span-2 relative h-56 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+            <Link href="/RestaurantDetail" className="col-span-2 relative h-56 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm block">
               <Image src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=800" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Chef Burgers London" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute top-3 left-3 bg-white pl-1.5 pr-2 py-1 rounded-full flex items-center shadow-sm">
@@ -86,27 +86,27 @@ function Body() {
                 <h3 className="text-lg font-bold leading-tight">Smash & Grab Burgers</h3>
                 <p className="text-xs text-gray-200 mt-1">$0 Delivery fee • 15–25 min</p>
               </div>
-            </div>
+            </Link>
 
             {/* Small Card 1 */}
-            <div className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+            <Link href="/RestaurantDetail" className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm block">
               <Image src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Grand Ai Cafe" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
               <div className="absolute bottom-3 left-3 text-white pr-2">
                 <h3 className="text-sm font-bold leading-tight line-clamp-1">Oshi Sushi Bar</h3>
                 <p className="text-xs text-gray-200 mt-1">30–40 min</p>
               </div>
-            </div>
+            </Link>
 
             {/* Small Card 2 */}
-            <div className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm">
+            <Link href="/RestaurantDetail" className="relative h-44 rounded-[20px] overflow-hidden group cursor-pointer shadow-sm block">
               <Image src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500" fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="Luigi's Oven" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
               <div className="absolute bottom-3 left-3 text-white pr-2">
                 <h3 className="text-sm font-bold leading-tight line-clamp-1">Luigi's Oven</h3>
                 <p className="text-xs text-gray-200 mt-1">20–30 min</p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

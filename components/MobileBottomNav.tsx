@@ -1,53 +1,51 @@
 "use client";
 
-import { Home, Search, ClipboardList, User } from "lucide-react";
+import { Home, Store, ClipboardList, User } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function MobileBottomNav() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const isHome = pathname === '/';
+  const isRestaurants = pathname.includes('/RestaurantDetail') || pathname.includes('/product');
+  const isOrders = pathname.includes('/order-history') || pathname.includes('/order-success') || pathname.includes('/track-order');
+  const isProfile = pathname.includes('/profile') || pathname.includes('/login') || pathname.includes('/signup');
+
   return (
-    <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-3 pb-safe z-50 flex justify-between items-center text-xs font-medium text-gray-500 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-      <button 
+    <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-2 z-50 flex justify-between items-center text-xs font-medium text-gray-500 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <button
         onClick={() => router.push("/")}
-        className={`flex flex-col items-center space-y-1 w-16 ${pathname === '/' ? 'text-orange-500' : 'hover:text-orange-500 transition-colors'}`}
+        className={`flex flex-col items-center space-y-1 w-14 ${isHome ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500 transition-colors'}`}
       >
-        <div className={`p-1.5 rounded-full ${pathname === '/' ? 'bg-orange-50' : ''}`}>
-          <Home className={`w-[22px] h-[22px] ${pathname === '/' ? 'fill-orange-500' : ''}`} />
-        </div>
-        <span className="text-[10px] font-bold">Home</span>
+        <Home className={`w-[22px] h-[22px] ${isHome ? 'fill-orange-500 stroke-orange-500' : 'stroke-gray-400'}`} />
+        <span className={`text-[10px] font-semibold ${isHome ? 'text-orange-500' : ''}`}>Home</span>
       </button>
 
-      <button 
-        onClick={() => router.push("/browse-menu")}
-        className={`flex flex-col items-center space-y-1 w-16 ${pathname.includes('/browse-menu') ? 'text-orange-500' : 'hover:text-orange-500 transition-colors'}`}
+      <button
+        onClick={() => router.push("/RestaurantDetail")}
+        className={`flex flex-col items-center space-y-1 w-14 ${isRestaurants ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500 transition-colors'}`}
       >
-        <div className={`p-1.5 rounded-full ${pathname.includes('/browse-menu') ? 'bg-orange-50' : ''}`}>
-          <Search className={`w-[22px] h-[22px] ${pathname.includes('/browse-menu') ? 'stroke-[2.5px]' : ''}`} />
-        </div>
-        <span className="text-[10px] font-bold">Search</span>
+        <Store className={`w-[22px] h-[22px] ${isRestaurants ? 'stroke-orange-500 stroke-2' : 'stroke-gray-400'}`} />
+        <span className={`text-[10px] font-semibold ${isRestaurants ? 'text-orange-500' : ''}`}>Restaurants</span>
       </button>
 
-      <button 
+      <button
         onClick={() => router.push("/order-history")}
-        className={`flex flex-col items-center space-y-1 w-16 ${pathname.includes('/order-history') ? 'text-orange-500' : 'hover:text-orange-500 transition-colors'}`}
+        className={`flex flex-col items-center space-y-1 w-14 ${isOrders ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500 transition-colors'}`}
       >
-        <div className={`p-1.5 rounded-full ${pathname.includes('/order-history') ? 'bg-orange-50' : ''}`}>
-          <ClipboardList className={`w-[22px] h-[22px] ${pathname.includes('/order-history') ? 'stroke-[2.5px]' : ''}`} />
-        </div>
-        <span className="text-[10px] font-bold">Orders</span>
+        <ClipboardList className={`w-[22px] h-[22px] ${isOrders ? 'stroke-orange-500 stroke-2' : 'stroke-gray-400'}`} />
+        <span className={`text-[10px] font-semibold ${isOrders ? 'text-orange-500' : ''}`}>Orders</span>
       </button>
 
-      <button 
+      <button
         onClick={() => router.push("/profile")}
-        className={`flex flex-col items-center space-y-1 w-16 ${pathname.includes('/profile') ? 'text-orange-500' : 'hover:text-orange-500 transition-colors'}`}
+        className={`flex flex-col items-center space-y-1 w-14 ${isProfile ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500 transition-colors'}`}
       >
-        <div className={`p-1.5 rounded-full ${pathname.includes('/profile') ? 'bg-orange-50' : ''}`}>
-          <User className={`w-[22px] h-[22px] ${pathname.includes('/profile') ? 'fill-orange-500' : ''}`} />
-        </div>
-        <span className="text-[10px] font-bold">Profile</span>
+        <User className={`w-[22px] h-[22px] ${isProfile ? 'fill-orange-500 stroke-orange-500' : 'stroke-gray-400'}`} />
+        <span className={`text-[10px] font-semibold ${isProfile ? 'text-orange-500' : ''}`}>Profile</span>
       </button>
     </div>
   );
 }
+

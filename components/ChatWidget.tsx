@@ -146,7 +146,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
+    <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-40 flex flex-col items-end font-sans">
       {/* Chat Window */}
       {isOpen && (
         <div className="bg-white rounded-2xl shadow-[0_12px_28px_rgba(0,0,0,0.12),0_4px_10px_rgba(0,0,0,0.06)] mb-4 w-[340px] sm:w-[380px] flex flex-col h-[500px] max-h-[85vh] transition-all animate-in fade-in slide-in-from-bottom-5 border border-green-100 overflow-hidden">
