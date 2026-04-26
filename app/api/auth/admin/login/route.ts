@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Admin from "@/lib/models/Admin";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +13,10 @@ export async function POST(req: Request) {
     const adminCount = await Admin.countDocuments();
     if (adminCount === 0) {
       console.log("🛠 Không tìm thấy Admin. Đang khởi tạo Admin mặc định...");
-      const hashedDefaultPassword = await bcrypt.hash("123456", 10);
+      const hashedDefaultPassword = crypto
+        .createHash("md5")
+        .update("123456")
+        .digest("hex");
       await Admin.create({
         name: "Super Admin",
         email: "admin@odd-er.dev",
@@ -27,27 +30,31 @@ export async function POST(req: Request) {
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return NextResponse.json(
-        { message: "Email hoặc mật khẩu không chính xác (Admin không tồn tại)" },
-        { status: 401 }
+        {
+          message: "Email hoặc mật khẩu không chính xác (Admin không tồn tại)",
+        },
+        { status: 401 },
       );
     }
 
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    const isPasswordValid =
+      crypto.createHash("md5").update(password).digest("hex") ===
+      admin.password;
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Email hoặc mật khẩu sai" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     return NextResponse.json(
       { message: "Đăng nhập khoản quản trị thành công!", adminId: admin._id },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
       { message: "Lỗi Server", error: String(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import { NextApiRequestCookies } from "next/dist/server/api-utils";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 // -------------------------------------------------------------
 // 1. READ (ĐỌC) - Lấy thông tin của 1 user dựa vào ID
 // Phương thức: GET
@@ -63,10 +63,9 @@ export async function PUT(
     //  4 Nếu người dùng có gửi tên email hoặc email mới cập nhật
     if (name) user.name = name;
     if (email) user.email = email;
-    // 5. BẢO MẬT: Nhận biết nếu có Password mới thì Băm (Hash) nó trước khi ghi vào
+    // 5. BẢO MẬT: Nhận biết nếu có Password mới thì Băm (Hash) nó bằng MD5 trước khi ghi vào
     if (password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      user.password = crypto.createHash("md5").update(password).digest("hex");
     }
     // 6. Lưu toàn bộ thay đổi vừa gán xuống Database
     await user.save();
