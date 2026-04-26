@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 // GET /api/auth/reset-password?email=...&otp=... — validate OTP
 export async function GET(req: Request) {
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json(
         { message: "Mã OTP không đúng hoặc đã hết hạn" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,12 +40,15 @@ export async function POST(req: Request) {
     const { email, otp, newPassword } = await req.json();
 
     if (!email || !otp || !newPassword) {
-      return NextResponse.json({ message: "Thiếu thông tin bắt buộc" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Thiếu thông tin bắt buộc" },
+        { status: 400 },
+      );
     }
     if (newPassword.length < 6) {
       return NextResponse.json(
         { message: "Mật khẩu phải có ít nhất 6 ký tự" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -59,7 +62,7 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json(
         { message: "Mã OTP không đúng hoặc đã hết hạn" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -71,7 +74,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Mật khẩu đã được đặt lại thành công!" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

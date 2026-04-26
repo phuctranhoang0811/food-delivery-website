@@ -1,45 +1,59 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
-import bcrypt from "bcryptjs";
+import crypto from "crypto"; // Import crypto để dùng MD5
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    // Phân tích dũ liệu từ frontend
+    const body = await req.json();
+    const { name, email, password } = body;
 
-    console.log("📝 Dữ liệu nhận được:", { name, email, password: "***" });
-
-    await connectDB();
-    console.log("✅ Kết nối MongoDB thành công");
-
-    const existingUser = await User.findOne({ email });
-    console.log("🔍 Kiểm tra email tồn tại:", existingUser ? "Có" : "Không");
-    
-    if (existingUser) {
+    //2 @ Kiểm tra dữ liệu bị thiếu
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { message: "Email này đã được đăng ký." },
-        { status: 400 }
+        { message: "Vui lòng nhập đầy đủ thông tin" },
+        { status: 400 },
       );
     }
+    // Kết nối database
+    await connectDB();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("🔐 Mã hóa mật khẩu thành công");
-    
-    const newUser = await User.create({ name, email, password: hashedPassword });
-    console.log("✅ User tạo thành công:", newUser._id);
-
+    // KIỂM TRA TRÙNG EMAIL TRƯỚC KHI TẠO (Rất quan trọng để tránh lỗi 500)
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "Email này đã được sử dụng" },
+        { status: 400 },
+      );
+    }
+    // 4. BẢO MẬT: Băm mật khẩu (Mã hóa MD5)
+    const hashedPassword = crypto
+      .createHash("md5")
+      .update(password)
+      .digest("hex");
+    //5 Tạo mới account
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+    // 6 Tra ve ket qua thanh cong cho Frontend
     return NextResponse.json(
-      { message: "Đăng ký thành công!" },
-      { status: 201 }
+      {
+        message: "Tạo tài khoản thành công",
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+        },
+      },
+      { status: 201 }, // Status 201 Created: Dành cho khi tạo thành công tài nguyên mới
     );
   } catch (error) {
-    console.error("❌ Lỗi đăng ký:", error);
+    console.error("Lỗi đăng ký", error);
     return NextResponse.json(
-      { 
-        message: "Lỗi Server",
-        error: error instanceof Error ? error.message : "Unknown error"
-      },
-      { status: 500 }
+      { message: "Đã xảy ra lỗi trên sever" },
+      { status: 500 },
     );
   }
 }

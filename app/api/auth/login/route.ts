@@ -1,85 +1,62 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
-import Admin from "@/lib/models/Admin";
-import bcrypt from "bcryptjs";
-import { signToken } from "@/lib/auth";
-
-export async function POST(req: Request) {
+import crypto from "crypto";
+export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    // 1. Phân tích dữ liệu Frontend gửi lên (Chỉ cần email và password)
+    const body = await req.json();
+    const { email, password } = body;
 
+    if (!email || !password) {
+      return NextResponse.json(
+        { message: "Vui lòng nhập đầy đủ email và mật khẩu" },
+        { status: 400 },
+      );
+    }
+
+    // 2. Kết nối Database
     await connectDB();
 
-    // KIỂM TRA PHÍA NGƯỜI DÙNG THƯỜNG (USER)
+    // 3. TÌM TÀI KHOẢN: Xem email này có tồn tại trong DB không
     const user = await User.findOne({ email });
-    if (user) {
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return NextResponse.json({ message: "Email hoặc mật khẩu sai" }, { status: 401 });
-      }
-      
-      const token = await signToken({ userId: user._id.toString(), role: "user" });
-      const res = NextResponse.json(
-        { message: "Đăng nhập người dùng thành công!", userId: user._id, role: "user" },
-        { status: 200 }
+    if (!user) {
+      return NextResponse.json(
+        { message: "Tài khoản không tồn tại. Vui lòng đăng ký!" },
+        { status: 404 }, // 404 Not Found
       );
-      res.cookies.set("auth_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24, // 1 day
-      });
-      return res;
     }
 
-    // NẾU KHÔNG LÀ USER -> KIỂM TRA LUỒNG ADMIN VÀ KHỞI TẠO NẾU CẦN
-    const adminCount = await Admin.countDocuments();
-    if (adminCount === 0) {
-      const hashedDefaultPassword = await bcrypt.hash("123456", 10);
-      await Admin.create({
-        name: "Super Admin",
-        email: "admin@odd-er.dev",
-        password: hashedDefaultPassword,
-        role: "admin",
-      });
-      console.log("✅ Đã tạo tài khoản mặc định: admin@odd-er.dev / 123456");
-    }
+    // 4. KIỂM TRA MẬT KHẨU (Bảo mật)
+    // bcrypt.compare sẽ tự động băm cái "password" gõ tay và so khớp với cục "user.password" trong DB
+    const md5Password = crypto.createHash("md5").update(password).digest("hex");
 
-    const admin = await Admin.findOne({ email });
-    if (admin) {
-      const isPasswordValid = await bcrypt.compare(password, admin.password);
-      if (!isPasswordValid) {
-        return NextResponse.json({ message: "Email hoặc mật khẩu sai" }, { status: 401 });
-      }
-
-      const token = await signToken({ userId: admin._id.toString(), role: "admin" });
-      const res = NextResponse.json(
-        { message: "Đăng nhập Admin thành công!", userId: admin._id, role: "admin" },
-        { status: 200 }
+    const isMatch = md5Password === user.password;
+    if (!isMatch) {
+      return NextResponse.json(
+        { message: "Mật khẩu không chính xác!" },
+        { status: 400 }, // 400 Bad Request
       );
-      res.cookies.set("auth_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24, // 1 day
-      });
-      return res;
     }
 
-    // NẾU KHÔNG TÌM THẤY Ở ĐÂU QUÉT
+    // 5. ĐĂNG NHẬP THÀNH CÔNG
+    // Trả về thông tin để Frontend lưu vào LocalStorage hoặc State
     return NextResponse.json(
-      { message: "Email hoặc mật khẩu sai" },
-      { status: 401 }
+      {
+        message: "Đăng nhập thành công!",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      },
+      { status: 200 }, // 200 OK
     );
-    
   } catch (error) {
-    console.error("Lỗi Login:", error);
+    console.error("Lỗi đăng nhập:", error);
     return NextResponse.json(
-      { message: "Lỗi Server" },
-      { status: 500 }
+      { message: "Đã xảy ra lỗi trên server" },
+      { status: 500 },
     );
   }
 }
