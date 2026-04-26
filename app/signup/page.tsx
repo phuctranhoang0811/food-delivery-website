@@ -43,6 +43,8 @@ export default function SignupPage() {
 
     setLoading(true);
 
+    console.log("==> Console Trình Duyệt: Đang chuẩn bị gửi data đăng ký:", { name, email, password });
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",

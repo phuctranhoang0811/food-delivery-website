@@ -9,6 +9,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, email, password } = body;
 
+    console.log("==> Dữ liệu người dùng gửi lên:", { name, email, password });
+
     //2 @ Kiểm tra dữ liệu bị thiếu
     if (!name || !email || !password) {
       return NextResponse.json(
