@@ -66,8 +66,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Hash và lưu mật khẩu mới, xóa OTP
-    user.password = await bcrypt.hash(newPassword, 10);
+    // Hash và lưu mật khẩu mới bằng MD5, xóa OTP
+    user.password = crypto.createHash("md5").update(newPassword).digest("hex");
     user.resetToken = null;
     user.resetTokenExpiry = null;
     await user.save();
