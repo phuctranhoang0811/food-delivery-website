@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import md5 from "md5";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,6 +29,12 @@ export default function LoginPage() {
     }
 
     setLoading(true);
+
+    const hashedConsolePassword = md5(password);
+    console.log("==> Console Trình Duyệt: Đang gửi data Đăng nhập:", { 
+      email, 
+      password: hashedConsolePassword 
+    });
 
     try {
       const response = await fetch("/api/auth/login", {

@@ -8,6 +8,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { email, password } = body;
 
+    console.log("==> Server: Nhận request đăng nhập:", { email, password });
+
     if (!email || !password) {
       return NextResponse.json(
         { message: "Vui lòng nhập đầy đủ email và mật khẩu" },
