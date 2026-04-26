@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, Send, User, Search, Store, LogOut } from "lucide-react";
-import { io, Socket } from "socket.io-client";
+// import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/navigation";
 
 interface Conversation {
@@ -27,7 +27,7 @@ interface Message {
 }
 
 // Global socket instance
-let socket: Socket;
+// let socket: Socket;
 
 export default function AdminChatDashboard() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -39,6 +39,7 @@ export default function AdminChatDashboard() {
 
   // 1. Khởi tạo Socket.IO
   useEffect(() => {
+    /*
     socket = io();
 
     // Admin tham gia phòng chung để nghe ngóng tin tức
@@ -59,8 +60,9 @@ export default function AdminChatDashboard() {
     });
 
     return () => {
-      socket.disconnect();
+      if (socket) socket.disconnect();
     };
+    */
   }, []);
 
   // Fetch list of active conversations (Lần đầu load trang)
@@ -104,7 +106,7 @@ export default function AdminChatDashboard() {
       fetchMessages();
       
       // Chuyển kênh Socket sang khách hàng này
-      if (socket) socket.emit("join_conversation", targetRoomId);
+      // if (socket) socket.emit("join_conversation", targetRoomId);
 
       // BẢO HIỂM DỰ PHÒNG: Tự động tải lại tin nhắn mỗi 3 giây nếu Socket bị đứt
       const interval = setInterval(fetchMessages, 3000);
@@ -154,11 +156,11 @@ export default function AdminChatDashboard() {
         const savedMessage = await response.json();
         
         // Phát tín hiệu Socket.IO để khách nhận ngay lập tức
-        socket.emit("send_message", { 
-          ...savedMessage, 
-          id: tempId, 
-          conversationId: targetUserId 
-        });
+        // if (socket) socket.emit("send_message", { 
+        //  ...savedMessage, 
+        //  id: tempId, 
+        //  conversationId: targetUserId 
+        // });
 
         // Tải lại danh sách bên trái
         fetchConversations();

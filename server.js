@@ -1,7 +1,7 @@
 const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io"); // Đã comment vì chưa dùng socket.io
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -21,6 +21,8 @@ app.prepare().then(() => {
     }
   });
 
+  // Đã comment khởi tạo Socket.IO
+  /*
   // Khởi tạo Socket.IO đính kèm vào HTTP Server của Next.js
   const io = new Server(server);
 
@@ -52,6 +54,7 @@ app.prepare().then(() => {
       console.log("Client disconnected:", socket.id);
     });
   });
+  */
 
   server.once("error", (err) => {
     console.error(err);
@@ -59,6 +62,6 @@ app.prepare().then(() => {
   });
 
   server.listen(port, () => {
-    console.log(`> Ready on http://${hostname}:${port} (With Socket.IO)`);
+    console.log(`> Ready on http://${hostname}:${port} (Socket.IO commented)`);
   });
 });

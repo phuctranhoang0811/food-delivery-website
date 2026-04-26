@@ -5,7 +5,7 @@ import {
   MessageCircle, X, Send, Minus, 
   Smile, ImageIcon, Store, Headset, User
 } from "lucide-react";
-import { io, Socket } from "socket.io-client";
+// import { io, Socket } from "socket.io-client";
 
 interface Message {
   _id?: string;
@@ -18,7 +18,7 @@ interface Message {
 
 const generateObjectId = () => [...Array(24)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
-let socket: Socket;
+// let socket: Socket; // Bỏ dùng socket
 
 import { usePathname } from "next/navigation";
 
@@ -44,9 +44,10 @@ export default function ChatWidget() {
   // 1. Khởi tạo Socket.IO và đọc ID Khách Hàng
   useEffect(() => {
     // Kết nối Socket
-    socket = io();
+    // socket = io();
 
     // Lắng nghe tin nhắn mới từ Admin gửi tới qua Socket
+    /*
     socket.on("receive_message", (newMsg: Message) => {
       setMessages((prev) => {
         // Chống lặp tin nhắn nếu đã thêm ảo trước đó
@@ -54,6 +55,7 @@ export default function ChatWidget() {
         return [...prev, newMsg];
       });
     });
+    */
 
     let storedId = localStorage.getItem("userId"); 
     // Fix: Xóa sạch cache lỗi nếu ID bị dính chữ "undefined" hoặc độ dài sai không đúng chuẩn Mongoose (24 hex)
@@ -67,7 +69,7 @@ export default function ChatWidget() {
     setCustomerId(storedId);
 
     return () => {
-      socket.disconnect();
+      // if (socket) socket.disconnect();
     };
   }, []);
 
@@ -76,7 +78,7 @@ export default function ChatWidget() {
     if (isOpen && customerId) {
       fetchMessages(customerId);
       // Tham gia phòng chat riêng biệt dựa trên ID khách hàng
-      if (socket) socket.emit("join_conversation", customerId);
+      // if (socket) socket.emit("join_conversation", customerId);
 
       // BẢO HIỂM DỰ PHÒNG: Tự động xin dữ liệu mỗi 3 giây nếu Socket bị đứt
       const interval = setInterval(() => fetchMessages(customerId), 3000);
@@ -138,7 +140,7 @@ export default function ChatWidget() {
          const savedMessage = await response.json();
          // 3. Kích hoạt tính năng Phóng tia chớp (Broadcast) qua Socket.IO tới Admin
          // Định tuyến bằng customerId thay vì conversationId để dễ quản lý phòng
-         socket.emit("send_message", { ...savedMessage, conversationId: customerId });
+         // if (socket) socket.emit("send_message", { ...savedMessage, conversationId: customerId });
       }
     } catch (error) {
       console.error("Network error:", error);
