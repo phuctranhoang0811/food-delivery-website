@@ -274,9 +274,9 @@ export default function ChatWidget() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-orange-500 hover:bg-orange-600 text-white w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(249,115,22,0.4)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.5)] transition-transform hover:scale-105 border-2 border-white"
+        className="bg-orange-500 hover:bg-orange-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl shadow-orange-500/30 transition-all hover:scale-105 border-2 border-white z-40 active:scale-95"
       >
-        {isOpen ? <X className="w-7 h-7" /> : <MessageCircle className="w-7 h-7" />}
+        {isOpen ? <X className="w-7 h-7" strokeWidth={2} /> : <MessageCircle className="w-7 h-7" strokeWidth={2} />}
       </button>
     </div>
   );

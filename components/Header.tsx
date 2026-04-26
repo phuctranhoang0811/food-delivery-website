@@ -11,7 +11,9 @@ import { formatPriceWithSymbol } from "@/lib/formatPrice";
 export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
   const { getCartCount, getCartTotal, getFinalTotal, openCart } = useCart();
@@ -28,6 +30,9 @@ export default function Header() {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
+      if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(e.target as Node)) {
+        setMobileDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -37,6 +42,7 @@ export default function Header() {
     localStorage.removeItem("userId");
     setUserId(null);
     setDropdownOpen(false);
+    setMobileDropdownOpen(false);
     router.push("/");
   };
 
@@ -63,34 +69,6 @@ export default function Header() {
   return (
     <>
       <header className="w-full">
-        {/* --- MOBILE HEADER (App-like) --- */}
-        <div className="md:hidden bg-[#f8f9fa] text-black px-4 pt-6 pb-2">
-          <div className="flex items-center justify-between">
-            {/* Location */}
-            <div className="flex items-center space-x-3">
-              <div className="bg-orange-100 p-2 rounded-full flex-shrink-0">
-                <MapPin className="text-orange-500 w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 font-medium leading-none mb-1">Delivering to</span>
-                <div className="flex items-center font-bold text-gray-900 text-sm leading-none">
-                  Regent Street, London <ChevronDown className="w-4 h-4 ml-1" />
-                </div>
-              </div>
-            </div>
-            {/* User Avatar */}
-            {userId ? (
-              <div className="bg-orange-50 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => router.push("/profile")}>
-                <User className="text-gray-800 w-5 h-5" />
-              </div>
-            ) : (
-              <div className="bg-orange-50 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer" onClick={() => router.push("/login")}>
-                <User className="text-gray-800 w-5 h-5" />
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* --- DESKTOP Header (Top Bar) --- */}
         <div className="hidden md:block bg-gray-800 text-white">
           <div className="container mx-auto max-w-[1800px] flex flex-col md:flex-row items-center md:justify-between py-2 px-4 sm:px-8 lg:px-16 xl:px-20 gap-3 md:gap-0">
@@ -134,8 +112,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Navigation Bar (Desktop Only) */}
-        <nav className="hidden md:block bg-white text-black shadow-sm overflow-hidden">
+        {/* Navigation Bar */}
+        <nav className="bg-white text-black shadow-sm">
           <div className="container mx-auto max-w-[1800px] flex flex-col lg:flex-row items-center justify-between py-4 px-4 sm:px-8 lg:px-16 xl:px-20 gap-4 lg:gap-0">
             <div className="flex items-center">
               <Image
@@ -143,10 +121,10 @@ export default function Header() {
                 alt="Order UK Logo"
                 width={160}
                 height={80}
-                className="h-16 w-auto object-contain"
+                className="h-12 md:h-16 w-auto object-contain"
               />
             </div>
-            <ul className="flex flex-wrap justify-center gap-3 sm:space-x-8 text-sm sm:text-base">
+            <ul className="flex flex-wrap justify-center gap-2 sm:space-x-8 text-xs sm:text-base">
               {["Home", "Restaurants", "Special Offers", "Track Order"].map((item) => (
                 <li key={item}>
                   <button
@@ -179,7 +157,7 @@ export default function Header() {
 
                 {/* Dropdown Menu */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 z-[100] overflow-hidden">
                     <div className="py-1">
                       <button
                         onClick={() => { setDropdownOpen(false); router.push("/profile"); }}

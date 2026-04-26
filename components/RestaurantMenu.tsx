@@ -10,11 +10,29 @@ import Toast from "./Toast";
 import { formatPriceFromString } from "@/lib/formatPrice";
 
 export default function RestaurantMenu() {
+  const [activeCategory, setActiveCategory] = useState("Offers");
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100; // Offset for sticky header
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      setActiveCategory(id);
+    }
+  };
 
   // Lấy các categories
   const burgersForOffers = menuItems
@@ -46,7 +64,38 @@ export default function RestaurantMenu() {
 
   return (
     <section className="w-full">
-      {/* Sticky Navigation Bar - REMOVED */}
+      {/* Sticky Navigation Bar - Grab Style */}
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm overflow-x-auto no-scrollbar">
+        <div className="max-w-[2000px] mx-auto px-8 sm:px-12 lg:px-20 xl:px-24">
+          <ul className="flex items-center space-x-8 py-4 whitespace-nowrap min-w-max">
+            {[
+              "Offers",
+              "Burgers",
+              "Fries",
+              "Cold drinks",
+              "Salads",
+              "Happy Meal",
+              "Desserts",
+            ].map((cat) => (
+              <li key={cat}>
+                <button
+                  onClick={() => scrollToSection(cat)}
+                  className={`text-sm sm:text-base font-bold transition-all relative py-2 ${
+                    activeCategory === cat
+                      ? "text-[#FC8A06]"
+                      : "text-gray-500 hover:text-gray-900"
+                  }`}
+                >
+                  {cat}
+                  {activeCategory === cat && (
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-[#FC8A06] rounded-full"></div>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       {/* Content Area */}
       <div className="max-w-[2000px] mx-auto px-8 sm:px-12 lg:px-20 xl:px-24 py-8">
@@ -56,7 +105,7 @@ export default function RestaurantMenu() {
 
         <div className="space-y-12">
           {/* Special Offers Cards */}
-          <div>
+          <div id="Offers">
             <h3 className="text-2xl font-bold mb-6 text-[#FC8A06] flex items-center gap-2">
               <span className="bg-[#FC8A06] text-white px-3 py-1 rounded-lg text-sm">
                 HOT
@@ -104,7 +153,7 @@ export default function RestaurantMenu() {
           </div>
 
           {/* Burgers Section */}
-          <div>
+          <div id="Burgers">
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
               <Utensils className="w-6 h-6 text-orange-500" /> Popular Burgers
             </h3>
@@ -222,7 +271,7 @@ export default function RestaurantMenu() {
           </div>
 
           {/* Fries Section */}
-          <div>
+          <div id="Fries">
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
               <Utensils className="w-6 h-6 text-orange-500" /> Crispy Fries
             </h3>
@@ -340,7 +389,7 @@ export default function RestaurantMenu() {
           </div>
 
           {/* Cold Drinks Section */}
-          <div>
+          <div id="Cold drinks">
             <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
               <CupSoda className="w-6 h-6 text-orange-500" /> Refreshing Drinks
             </h3>
